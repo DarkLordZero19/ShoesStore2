@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.ApplicationServices;
 using ShoesStore.Module;
 using System;
 using System.Collections.Generic;
@@ -7,451 +6,323 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static ShoesStore.Module.Users;
 
 namespace ShoesStore.Data
 {
     public class DataContext
     {
-        public List<Products> Products { get; set; }
-        public List<Users> Users { get; set; }
-        public List<Orders> Orders { get; set; }
-        static string connectionString = "Server=(localdb)\\mssqllocaldb;Database=master;Trusted_Connection=True;";
-        public DataContext()
-        {
-            // Создаем таблицы при первом запуске
-            Task.Run(async () => await InitializeDatabase()).Wait();
-        }
+        private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\777\\Source\\Repos\\ShoesStore2\\ShoesStore\\Database\\ShoesStoreDB.mdf;Integrated Security=True";
 
-        private async Task InitializeDatabase()
+        public User GetUser(string login, string password)
         {
-            try
-            {
-                await CreateUsers();
-                await CreateProducts();
-                await CreateOrders();
-                await SeedUsersIfEmpty();
-                Console.WriteLine("База данных инициализирована");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка инициализации БД: {ex.Message}");
-            }
-        }
-        static async Task CreateUsers()
-        {
+            User user = null;
+            string query = "SELECT Id, Login, Password, Role FROM Users WHERE Login = @Login AND Password = @Password";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                await connection.OpenAsync();
-                string sql = @"
-                CREATE TABLE Users (
-                    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID() NOT NULL,
-                    Username NVARCHAR(100) NOT NULL,
-                    Password NVARCHAR(255) NOT NULL,
-                    Role NVARCHAR(20) NOT NULL,
-                    CreatedDate DATETIME DEFAULT GETDATE() NULL
-                )";
-                SqlCommand command = new SqlCommand(sql, connection);
-                await command.ExecuteNonQueryAsync();
-                Console.WriteLine("Таблица Users создана");
-            }
-        }
-        public async Task<List<Users>> GetUsersAsync(List<Users> users)
-        {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync();
-                var command = new SqlCommand("SELECT * FROM Users", connection);
-
-                using (var reader = await command.ExecuteReaderAsync())
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Login", login);
+                command.Parameters.AddWithValue("@Password", password);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    while (await reader.ReadAsync())
+                    if (reader.Read())
                     {
-                        Guid id = reader.GetGuid(0);
-                        string username = reader.GetString(1);
-                        string password = reader.GetString(2);
-                        Users.RoleType role = (Users.RoleType)Enum.Parse(typeof(Users.RoleType), reader.GetString(3));
-                        DateTime createdDate;
-                        if (reader.IsDBNull(4))
-                            createdDate = DateTime.MinValue;
-                        else
-                            createdDate = reader.GetDateTime(4);
-
-                        var user = new Users(id, username, password, role, createdDate);
-                        users.Add(user);
+                        user = new User
+                        {
+                            Id = reader.GetInt32(0),
+                            Login = reader.GetString(1),
+                            Password = reader.GetString(2),
+                            Role = reader.GetString(3)
+                        };
                     }
                 }
             }
-            Users = users;
-            return users;
-        }
-        public async Task SaveUserAsync(Users user)
-        {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync();
-                string sql = @"
-                    INSERT INTO Users (Id, Username, Password, Role, CreatedDate)
-                    VALUES (@Id, @Username, @Password, @Role, @CreatedDate)";
-
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", user.ID);
-                    command.Parameters.AddWithValue("@Username", user.UserName);
-                    command.Parameters.AddWithValue("@Password", user.Password);
-                    command.Parameters.AddWithValue("@Role", user.Role.ToString());
-                    command.Parameters.AddWithValue("@CreatedDate", user.CreatedDate);
-
-                    await command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-        private async Task SeedUsersIfEmpty()
-        {
-            int count = await GetUserCountAsync();
-            if (count == 0)
-            {
-                var users = new List<Users>
-                {
-                    new Users("admin", "admin123", RoleType.Admin),
-                    new Users("manager", "manager123", RoleType.Manager),
-                    new Users("client", "client123", RoleType.Client)
-                };
-
-                foreach (var user in users)
-                {
-                    await SaveUserAsync(user);
-                }
-
-                Console.WriteLine("Тестовые пользователи добавлены.");
-            }
+            return user;
         }
 
-        private async Task<int> GetUserCountAsync()
+        public void RegisterUser(string login, string password)
         {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync();
-                string sql = "SELECT COUNT(*) FROM Users";
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    return (int)await command.ExecuteScalarAsync();
-                }
-            }
-        }
-
-        static async Task CreateProducts()
-        {
+            string query = "INSERT INTO Users (Login, Password, Role) VALUES (@Login, @Password, 'Client')";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                await connection.OpenAsync();
-                string sql = @"
-                CREATE TABLE Products (
-                    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID() NOT NULL,
-                    Name NVARCHAR(200) NOT NULL,
-                    Description NVARCHAR(MAX) NULL,
-                    Category NVARCHAR(100) NOT NULL,
-                    Price DECIMAL(10,2) NOT NULL,
-                    StockQuantity INT DEFAULT 0 NOT NULL,
-                    Size INT NULL,
-                    Color NVARCHAR(50) NULL,
-                    Brand NVARCHAR(100) NULL,
-                    CreatedDate DATETIME DEFAULT GETDATE() NULL
-                )";
-                SqlCommand command = new SqlCommand(sql, connection);
-                await command.ExecuteNonQueryAsync();
-                Console.WriteLine("Таблица Products создана");
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Login", login);
+                command.Parameters.AddWithValue("@Password", password);
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
-        public async Task<List<Products>> GetProductsAsync(List<Products> products)
+        //Получить все товары (без фильтров)
+        public List<Product> GetAllProducts()
         {
-            using (var connection = new SqlConnection(connectionString))
+            List<Product> products = new List<Product>();
+            string query = "SELECT Id, Name, Description, Price, Quantity, Category FROM Products";
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                await connection.OpenAsync();
-                var command = new SqlCommand("SELECT * FROM Products", connection);
-
-                using (var reader = await command.ExecuteReaderAsync())
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    while (await reader.ReadAsync())
+                    while (reader.Read())
                     {
-                        Guid id = reader.GetGuid(0);
-                        string name = reader.GetString(1);
-                        string description = reader.GetString(2);
-                        string category = reader.GetString(3);
-                        decimal price = reader.GetDecimal(4);
-                        int stockQuantity = reader.GetInt32(5);
-
-                        DateTime createdDate = reader.GetDateTime(9);
-
-                        int? size = null;
-                        if (!reader.IsDBNull(6))
-                            size = reader.GetInt32(6);
-
-                        string color = null;
-                        if (!reader.IsDBNull(7))
-                            color = reader.GetString(7);
-
-                        string brand = null;
-                        if (!reader.IsDBNull(8))
-                            brand = reader.GetString(8);
-
-                        var product = new Products(
-                            id, name, description, category, price,
-                            stockQuantity, createdDate, size, color, brand
-                        );
-
+                        Product product = new Product();
+                        product.Id = reader.GetInt32(0);
+                        product.Name = reader.GetString(1);
+                        product.Description = reader.IsDBNull(2) ? null : reader.GetString(2);
+                        product.Price = reader.GetDecimal(3);
+                        product.Quantity = reader.GetInt32(4);
+                        product.Category = reader.IsDBNull(5) ? null : reader.GetString(5);
                         products.Add(product);
                     }
                 }
             }
-            Products = products;
             return products;
         }
-        public async Task AddProductAsync(Products product)
+
+        //Получить товары с фильтрацией, поиском и сортировкой (для менеджера/админа)
+        public List<Product> GetProducts(string categoryFilter, string searchText, string sortBy)
         {
-            using (var connection = new SqlConnection(connectionString))
+            List<Product> products = new List<Product>();
+            string query = "SELECT Id, Name, Description, Price, Quantity, Category FROM Products WHERE 1=1";
+
+            if (!string.IsNullOrEmpty(categoryFilter))
+                query += " AND Category = @Category";
+            if (!string.IsNullOrEmpty(searchText))
+                query += " AND (Name LIKE @Search OR Description LIKE @Search)";
+
+            //Безопасная сортировка (только разрешённые варианты)
+            if (!string.IsNullOrEmpty(sortBy))
             {
-                await connection.OpenAsync();
-                string sql = @"
-                    INSERT INTO Products (Id, Name, Description, Category, Price, StockQuantity, Size, Color, Brand, CreatedDate)
-                    VALUES (@Id, @Name, @Description, @Category, @Price, @StockQuantity, @Size, @Color, @Brand, @CreatedDate)";
-
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", product.ID);
-                    command.Parameters.AddWithValue("@Name", product.Name);
-
-                    if (product.Description != null)
-                        command.Parameters.AddWithValue("@Description", product.Description);
-                    else
-                        command.Parameters.AddWithValue("@Description", DBNull.Value);
-
-                    command.Parameters.AddWithValue("@Category", product.Category);
-                    command.Parameters.AddWithValue("@Price", product.Price);
-                    command.Parameters.AddWithValue("@StockQuantity", product.StockQuantity);
-
-                    if (product.Size.HasValue)
-                        command.Parameters.AddWithValue("@Size", product.Size.Value);
-                    else
-                        command.Parameters.AddWithValue("@Size", DBNull.Value);
-
-                    if (product.Color != null)
-                        command.Parameters.AddWithValue("@Color", product.Color);
-                    else
-                        command.Parameters.AddWithValue("@Color", DBNull.Value);
-
-                    if (product.Brand != null)
-                        command.Parameters.AddWithValue("@Brand", product.Brand);
-                    else
-                        command.Parameters.AddWithValue("@Brand", DBNull.Value);
-
-                    command.Parameters.AddWithValue("@CreatedDate", product.CreatedDate);
-
-                    await command.ExecuteNonQueryAsync();
-                }
+                if (sortBy == "PriceASC")
+                    query += " ORDER BY Price ASC";
+                else if (sortBy == "PriceDESC")
+                    query += " ORDER BY Price DESC";
+                else if (sortBy == "NameASC")
+                    query += " ORDER BY Name ASC";
+                else if (sortBy == "NameDESC")
+                    query += " ORDER BY Name DESC";
+                else
+                    query += " ORDER BY Id";
             }
-        }
-
-        public async Task UpdateProductAsync(Products product)
-        {
-            using (var connection = new SqlConnection(connectionString))
+            else
             {
-                await connection.OpenAsync();
-                string sql = @"
-                    UPDATE Products SET
-                        Name = @Name,
-                        Description = @Description,
-                        Category = @Category,
-                        Price = @Price,
-                        StockQuantity = @StockQuantity,
-                        Size = @Size,
-                        Color = @Color,
-                        Brand = @Brand
-                    WHERE Id = @Id";
-
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", product.ID);
-                    command.Parameters.AddWithValue("@Name", product.Name);
-
-                    if (product.Description != null)
-                        command.Parameters.AddWithValue("@Description", product.Description);
-                    else
-                        command.Parameters.AddWithValue("@Description", DBNull.Value);
-
-                    command.Parameters.AddWithValue("@Category", product.Category);
-                    command.Parameters.AddWithValue("@Price", product.Price);
-                    command.Parameters.AddWithValue("@StockQuantity", product.StockQuantity);
-
-                    if (product.Size.HasValue)
-                        command.Parameters.AddWithValue("@Size", product.Size.Value);
-                    else
-                        command.Parameters.AddWithValue("@Size", DBNull.Value);
-
-                    if (product.Color != null)
-                        command.Parameters.AddWithValue("@Color", product.Color);
-                    else
-                        command.Parameters.AddWithValue("@Color", DBNull.Value);
-
-                    if (product.Brand != null)
-                        command.Parameters.AddWithValue("@Brand", product.Brand);
-                    else
-                        command.Parameters.AddWithValue("@Brand", DBNull.Value);
-
-                    await command.ExecuteNonQueryAsync();
-                }
+                query += " ORDER BY Id";
             }
-        }
-        public async Task DeleteProductAsync(Guid productId)
-        {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync();
-                string deleteOrders = "DELETE FROM Orders WHERE ProductId = @ProductId";
-                using (var cmdOrders = new SqlCommand(deleteOrders, connection))
-                {
-                    cmdOrders.Parameters.AddWithValue("@ProductId", productId);
-                    await cmdOrders.ExecuteNonQueryAsync();
-                }
 
-                string sql = "DELETE FROM Products WHERE Id = @Id";
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", productId);
-                    await command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-        static async Task CreateOrders()
-        {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                await connection.OpenAsync();
-                string sql = @"
-                CREATE TABLE Orders (
-                    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID() NOT NULL,
-                    UserId UNIQUEIDENTIFIER NOT NULL,
-                    ProductId UNIQUEIDENTIFIER NOT NULL,
-                    Quantity INT DEFAULT 1 NOT NULL,
-                    OrderDate DATETIME DEFAULT GETDATE() NOT NULL,
-                    Status NVARCHAR(20) DEFAULT 'Pending' NOT NULL,
-                    TotalPrice DECIMAL(10,2) NOT NULL,
-                    Notes NVARCHAR(500) NULL,
-                    ShippingAddress NVARCHAR(500) NULL,
-                    Phone NVARCHAR(20) NULL,
-                    FOREIGN KEY (UserId) REFERENCES Users(Id),
-                    FOREIGN KEY (ProductId) REFERENCES Products(Id)
-                )";
-                SqlCommand command = new SqlCommand(sql, connection);
-                await command.ExecuteNonQueryAsync();
-                Console.WriteLine("Таблица Orders создана");
+                SqlCommand command = new SqlCommand(query, connection);
+                if (!string.IsNullOrEmpty(categoryFilter))
+                    command.Parameters.AddWithValue("@Category", categoryFilter);
+                if (!string.IsNullOrEmpty(searchText))
+                    command.Parameters.AddWithValue("@Search", "%" + searchText + "%");
+
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Product product = new Product();
+                        product.Id = reader.GetInt32(0);
+                        product.Name = reader.GetString(1);
+                        product.Description = reader.IsDBNull(2) ? null : reader.GetString(2);
+                        product.Price = reader.GetDecimal(3);
+                        product.Quantity = reader.GetInt32(4);
+                        product.Category = reader.IsDBNull(5) ? null : reader.GetString(5);
+                        products.Add(product);
+                    }
+                }
+            }
+            return products;
+        }
+
+        //Добавить новый товар
+        public void AddProduct(Product product)
+        {
+            string query = "INSERT INTO Products (Name, Description, Price, Quantity, Category) VALUES (@Name, @Description, @Price, @Quantity, @Category)";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Name", product.Name);
+                command.Parameters.AddWithValue("@Description", (object)product.Description ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Price", product.Price);
+                command.Parameters.AddWithValue("@Quantity", product.Quantity);
+                command.Parameters.AddWithValue("@Category", (object)product.Category ?? DBNull.Value);
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
-        public async Task<List<Orders>> GetOrdersAsync(List<Orders> orders)
+        //Обновить данные товара
+        public void UpdateProduct(Product product)
         {
-            using (var connection = new SqlConnection(connectionString))
+            string query = "UPDATE Products SET Name = @Name, Description = @Description, Price = @Price, Quantity = @Quantity, Category = @Category WHERE Id = @Id";
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                await connection.OpenAsync();
-                var command = new SqlCommand("SELECT * FROM Orders", connection);
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", product.Id);
+                command.Parameters.AddWithValue("@Name", product.Name);
+                command.Parameters.AddWithValue("@Description", (object)product.Description ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Price", product.Price);
+                command.Parameters.AddWithValue("@Quantity", product.Quantity);
+                command.Parameters.AddWithValue("@Category", (object)product.Category ?? DBNull.Value);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
 
-                using (var reader = await command.ExecuteReaderAsync())
+        //Удалить товар по ID
+        public void DeleteProduct(int productId)
+        {
+            string query = "DELETE FROM Products WHERE Id = @Id";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", productId);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
+        //Получить список заказов с возможностью фильтрации
+        public List<Order> GetOrders(int? userId, DateTime? dateFrom, DateTime? dateTo, string status)
+        {
+            List<Order> orders = new List<Order>();
+            string query = "SELECT Id, UserId, OrderDate, Status FROM Orders WHERE 1=1";
+            if (userId.HasValue)
+                query += " AND UserId = @UserId";
+            if (dateFrom.HasValue)
+                query += " AND OrderDate >= @DateFrom";
+            if (dateTo.HasValue)
+                query += " AND OrderDate <= @DateTo";
+            if (!string.IsNullOrEmpty(status))
+                query += " AND Status = @Status";
+            query += " ORDER BY OrderDate DESC";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                if (userId.HasValue)
+                    command.Parameters.AddWithValue("@UserId", userId.Value);
+                if (dateFrom.HasValue)
+                    command.Parameters.AddWithValue("@DateFrom", dateFrom.Value);
+                if (dateTo.HasValue)
+                    command.Parameters.AddWithValue("@DateTo", dateTo.Value);
+                if (!string.IsNullOrEmpty(status))
+                    command.Parameters.AddWithValue("@Status", status);
+
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    while (await reader.ReadAsync())
+                    while (reader.Read())
                     {
-                        Guid id = reader.GetGuid(0);
-                        Guid userId = reader.GetGuid(1);
-                        Guid productId = reader.GetGuid(2);
-                        int quantity = reader.GetInt32(3);
-                        DateTime orderDate = reader.GetDateTime(4);
-                        string status = reader.GetString(5);
-                        decimal totalPrice = reader.GetDecimal(6);
-
-                        string notes = null;
-                        if (!reader.IsDBNull(7))
-                            notes = reader.GetString(7);
-
-                        string shippingAddress = null;
-                        if (!reader.IsDBNull(8))
-                            shippingAddress = reader.GetString(8);
-
-                        string phone = null;
-                        if (!reader.IsDBNull(9))
-                            phone = reader.GetString(9);
-
-                        var order = new Orders(id, userId, productId, quantity, orderDate, status, totalPrice, notes, shippingAddress, phone);
+                        Order order = new Order
+                        {
+                            Id = reader.GetInt32(0),
+                            UserId = reader.GetInt32(1),
+                            OrderDate = reader.GetDateTime(2),
+                            Status = reader.GetString(3)
+                        };
                         orders.Add(order);
                     }
                 }
             }
-            Orders = orders;
             return orders;
         }
-        public async Task AddOrderAsync(Orders order)
+
+        //Получить все позиции конкретного заказа
+        public List<OrderItem> GetOrderItems(int orderId)
         {
-            using (var connection = new SqlConnection(connectionString))
+            List<OrderItem> items = new List<OrderItem>();
+            string query = "SELECT Id, OrderId, ProductId, Quantity, Price FROM OrderItems WHERE OrderId = @OrderId";
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                await connection.OpenAsync();
-                string sql = @"
-                    INSERT INTO Orders (Id, UserId, ProductId, Quantity, OrderDate, Status, TotalPrice, Notes, ShippingAddress, Phone)
-                    VALUES (@Id, @UserId, @ProductId, @Quantity, @OrderDate, @Status, @TotalPrice, @Notes, @ShippingAddress, @Phone)";
-
-                using (var command = new SqlCommand(sql, connection))
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@OrderId", orderId);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Parameters.AddWithValue("@Id", order.Id);
-                    command.Parameters.AddWithValue("@UserId", order.UserId);
-                    command.Parameters.AddWithValue("@ProductId", order.ProductId);
-                    command.Parameters.AddWithValue("@Quantity", order.Quantity);
-                    command.Parameters.AddWithValue("@OrderDate", order.OrderDate);
-                    command.Parameters.AddWithValue("@Status", order.Status);
-                    command.Parameters.AddWithValue("@TotalPrice", order.TotalPrice);
+                    while (reader.Read())
+                    {
+                        OrderItem item = new OrderItem
+                        {
+                            Id = reader.GetInt32(0),
+                            OrderId = reader.GetInt32(1),
+                            ProductId = reader.GetInt32(2),
+                            Quantity = reader.GetInt32(3),
+                            Price = reader.GetDecimal(4)
+                        };
+                        items.Add(item);
+                    }
+                }
+            }
+            return items;
+        }
 
-                    if (order.Notes != null)
-                        command.Parameters.AddWithValue("@Notes", order.Notes);
-                    else
-                        command.Parameters.AddWithValue("@Notes", DBNull.Value);
+        //Добавить новый заказ вместе с позициями (в одной транзакции)
+        public void AddOrder(Order order, List<OrderItem> items)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    // Вставка заказа
+                    string orderQuery = "INSERT INTO Orders (UserId, OrderDate, Status) VALUES (@UserId, @OrderDate, @Status); SELECT SCOPE_IDENTITY();";
+                    SqlCommand orderCmd = new SqlCommand(orderQuery, connection, transaction);
+                    orderCmd.Parameters.AddWithValue("@UserId", order.UserId);
+                    orderCmd.Parameters.AddWithValue("@OrderDate", order.OrderDate);
+                    orderCmd.Parameters.AddWithValue("@Status", order.Status);
+                    int orderId = Convert.ToInt32(orderCmd.ExecuteScalar());
 
-                    if (order.ShippingAddress != null)
-                        command.Parameters.AddWithValue("@ShippingAddress", order.ShippingAddress);
-                    else
-                        command.Parameters.AddWithValue("@ShippingAddress", DBNull.Value);
+                    // Вставка позиций
+                    foreach (var item in items)
+                    {
+                        string itemQuery = "INSERT INTO OrderItems (OrderId, ProductId, Quantity, Price) VALUES (@OrderId, @ProductId, @Quantity, @Price)";
+                        SqlCommand itemCmd = new SqlCommand(itemQuery, connection, transaction);
+                        itemCmd.Parameters.AddWithValue("@OrderId", orderId);
+                        itemCmd.Parameters.AddWithValue("@ProductId", item.ProductId);
+                        itemCmd.Parameters.AddWithValue("@Quantity", item.Quantity);
+                        itemCmd.Parameters.AddWithValue("@Price", item.Price);
+                        itemCmd.ExecuteNonQuery();
+                    }
 
-                    if (order.Phone != null)
-                        command.Parameters.AddWithValue("@Phone", order.Phone);
-                    else
-                        command.Parameters.AddWithValue("@Phone", DBNull.Value);
-
-                    await command.ExecuteNonQueryAsync();
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
         }
-        public async Task DeleteOrderAsync(Guid orderId)
+
+        //Обновить статус заказа
+        public void UpdateOrderStatus(int orderId, string newStatus)
         {
-            using (var connection = new SqlConnection(connectionString))
+            string query = "UPDATE Orders SET Status = @Status WHERE Id = @Id";
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                await connection.OpenAsync();
-                string sql = "DELETE FROM Orders WHERE Id = @Id";
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", orderId);
-                    await command.ExecuteNonQueryAsync();
-                }
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", orderId);
+                command.Parameters.AddWithValue("@Status", newStatus);
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
-        public async Task UpdateOrderStatusAsync(Guid orderId, string newStatus)
+
+        //Удалить заказ (позиции удалятся каскадно)
+        public void DeleteOrder(int orderId)
         {
-            using (var connection = new SqlConnection(connectionString))
+            string query = "DELETE FROM Orders WHERE Id = @Id";
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                await connection.OpenAsync();
-                string sql = "UPDATE Orders SET Status = @Status WHERE Id = @Id";
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@Status", newStatus);
-                    command.Parameters.AddWithValue("@Id", orderId);
-                    await command.ExecuteNonQueryAsync();
-                }
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", orderId);
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
     }

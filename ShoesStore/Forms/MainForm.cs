@@ -17,121 +17,100 @@ namespace ShoesStore.Forms
     public partial class MainForm : Form
     {
         private DataContext context;
-        private Users currentUser;
-        public MainForm(Users user)
+        private User currentUser;
+        public MainForm()
         {
             InitializeComponent();
             context = new DataContext();
+        }
+        public MainForm(User user) : this()
+        {
             currentUser = user;
-
-            this.Text = $"Магазин обуви - {user.UserName} ({user.Role})";
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-
-            ConfigurePanelsByRole();
+            ConfigureUIBasedOnRole();
         }
 
-        private void ConfigurePanelsByRole()
+        private void ConfigureUIBasedOnRole()
         {
-            ClientPanel.Visible = true;
-            ManagerPanel.Visible = true;
-            AdminPanel.Visible = true;
+            clientPanel.Visible = false;
+            managerPanel.Visible = false;
+            adminPanel.Visible = false;
+
+            if (currentUser == null) return;
 
             switch (currentUser.Role)
             {
-                case Users.RoleType.Admin:
-                    AdminPanel.Visible = true;
-                    ManagerPanel.Visible = true;
-                    ClientPanel.Visible = true;
+                case "Client":
+                    clientPanel.Visible = true;
                     break;
-
-                case Users.RoleType.Manager:
-                    ManagerPanel.Visible = true;
-                    ClientPanel.Visible = true;
+                case "Manager":
+                    clientPanel.Visible = true;
+                    managerPanel.Visible = true;
                     break;
-
-                case Users.RoleType.Client:
-                case Users.RoleType.Guest:
-                    ClientPanel.Visible = true;
+                case "Admin":
+                    adminPanel.Visible = true;
+                    managerPanel.Visible = true;
+                    clientPanel.Visible = true;
+                    break;
+                case "Guest":
+                    clientPanel.Visible = true;
                     break;
             }
         }
-        private void BuyProductbtn_Click(object sender, EventArgs e)
+        private void OpenManagementForm(string initialTab)
         {
-            OpenManagementForm(ManagementMode.CreateOrder);
+            ManagementForm mgmtForm = new ManagementForm(currentUser, initialTab);
+            mgmtForm.ShowDialog();
         }
 
-        private void ManageControlProductbtn_Click(object sender, EventArgs e)
+
+        private void buyProductButton_Click(object sender, EventArgs e)
         {
-            OpenManagementForm(ManagementMode.Products);
+            OpenManagementForm("Purchase");
         }
 
-        private void ManageControlOrdersbtn_Click(object sender, EventArgs e)
+        private void manageControlProductButton_Click(object sender, EventArgs e)
         {
-            OpenManagementForm(ManagementMode.Orders);
+            OpenManagementForm("Products");
         }
 
-        private void Exportbtn_Click(object sender, EventArgs e)
+        private void manageControlOrdersButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Функция экспорта в разработке", "Информация",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            OpenManagementForm("Orders");
         }
 
-        private void AdminControlProductbtn_Click(object sender, EventArgs e)
+        private void exportButton_Click(object sender, EventArgs e)
         {
-            OpenManagementForm(ManagementMode.Products);
+            MessageBox.Show("Экспорт будет доступен позже.");
         }
 
-        private void AdminControlOrdersbtn_Click(object sender, EventArgs e)
+        private void adminControlProductButton_Click(object sender, EventArgs e)
         {
-            OpenManagementForm(ManagementMode.Orders);
+            OpenManagementForm("Products");
         }
 
-        private void Closebtn_Click(object sender, EventArgs e)
+        private void adminControlOrdersButton_Click(object sender, EventArgs e)
         {
-            Close();
+            OpenManagementForm("Orders");
         }
 
-        private void OpenManagementForm(ManagementMode mode)
-        {
-            try
-            {
-                var managementForm = new ManagementForm(currentUser, mode);
-                managementForm.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                var result = MessageBox.Show("Вы действительно хотите выйти?",
-                    "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                    Application.Exit();
-                else
-                    e.Cancel = true;
-            }
-            base.OnFormClosing(e);
-        }
-        private void ClientPanel_Paint(object sender, PaintEventArgs e)
+        private void clientPanel_Paint(object sender, PaintEventArgs e)
         {
 
         }
 
-        private void ManagerPanel_Paint(object sender, PaintEventArgs e)
+        private void managerPanel_Paint(object sender, PaintEventArgs e)
         {
 
         }
 
-        private void AdminPanel_Paint(object sender, PaintEventArgs e)
+        private void adminPanel_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

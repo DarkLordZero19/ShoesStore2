@@ -28,54 +28,53 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Registrationbtn = new Button();
-            Loginbtn = new Button();
-            UsernameTextBox = new TextBox();
-            PasswordTextBox = new TextBox();
+            registrationButton = new Button();
+            loginButton = new Button();
+            usernameTextBox = new TextBox();
+            passwordTextBox = new TextBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
-            Guestbtn = new Button();
-            ErrorLabel = new Label();
+            guestButton = new Button();
             SuspendLayout();
             // 
-            // Registrationbtn
+            // registrationButton
             // 
-            Registrationbtn.BackColor = SystemColors.ButtonHighlight;
-            Registrationbtn.Location = new Point(257, 308);
-            Registrationbtn.Name = "Registrationbtn";
-            Registrationbtn.Size = new Size(102, 49);
-            Registrationbtn.TabIndex = 0;
-            Registrationbtn.Text = "Регистрация";
-            Registrationbtn.UseVisualStyleBackColor = false;
-            Registrationbtn.Click += Registrationbtn_Click;
+            registrationButton.BackColor = SystemColors.ButtonHighlight;
+            registrationButton.Location = new Point(257, 308);
+            registrationButton.Name = "registrationButton";
+            registrationButton.Size = new Size(102, 49);
+            registrationButton.TabIndex = 0;
+            registrationButton.Text = "Регистрация";
+            registrationButton.UseVisualStyleBackColor = false;
+            registrationButton.Click += registrationButton_Click;
             // 
-            // Loginbtn
+            // loginButton
             // 
-            Loginbtn.BackColor = SystemColors.ButtonHighlight;
-            Loginbtn.Location = new Point(404, 308);
-            Loginbtn.Name = "Loginbtn";
-            Loginbtn.Size = new Size(107, 49);
-            Loginbtn.TabIndex = 1;
-            Loginbtn.Text = "Логин";
-            Loginbtn.UseVisualStyleBackColor = false;
-            Loginbtn.Click += Loginbtn_Click;
+            loginButton.BackColor = SystemColors.ButtonHighlight;
+            loginButton.Location = new Point(404, 308);
+            loginButton.Name = "loginButton";
+            loginButton.Size = new Size(107, 49);
+            loginButton.TabIndex = 1;
+            loginButton.Text = "Логин";
+            loginButton.UseVisualStyleBackColor = false;
+            loginButton.Click += loginButton_Click;
             // 
-            // UsernameTextBox
+            // usernameTextBox
             // 
-            UsernameTextBox.Location = new Point(257, 164);
-            UsernameTextBox.Name = "UsernameTextBox";
-            UsernameTextBox.Size = new Size(254, 23);
-            UsernameTextBox.TabIndex = 2;
-            UsernameTextBox.KeyDown += UsernameTextBox_KeyDown;
+            usernameTextBox.Location = new Point(257, 164);
+            usernameTextBox.Name = "usernameTextBox";
+            usernameTextBox.Size = new Size(254, 23);
+            usernameTextBox.TabIndex = 2;
+            usernameTextBox.KeyDown += usernameTextBox_KeyDown;
             // 
-            // PasswordTextBox
+            // passwordTextBox
             // 
-            PasswordTextBox.Location = new Point(257, 233);
-            PasswordTextBox.Name = "PasswordTextBox";
-            PasswordTextBox.Size = new Size(254, 23);
-            PasswordTextBox.TabIndex = 3;
-            PasswordTextBox.KeyDown += PasswordTextBox_KeyDown;
+            passwordTextBox.Location = new Point(257, 233);
+            passwordTextBox.Name = "passwordTextBox";
+            passwordTextBox.Size = new Size(254, 23);
+            passwordTextBox.TabIndex = 3;
+            passwordTextBox.KeyDown += passwordTextBox_KeyDown;
             // 
             // label1
             // 
@@ -107,40 +106,30 @@
             label3.TabIndex = 6;
             label3.Text = "Пароль";
             // 
-            // Guestbtn
+            // guestButton
             // 
-            Guestbtn.BackColor = SystemColors.ButtonHighlight;
-            Guestbtn.Location = new Point(257, 262);
-            Guestbtn.Name = "Guestbtn";
-            Guestbtn.Size = new Size(254, 23);
-            Guestbtn.TabIndex = 7;
-            Guestbtn.Text = "Кнопка гостя";
-            Guestbtn.UseVisualStyleBackColor = false;
-            Guestbtn.Click += Guestbtn_Click;
-            // 
-            // ErrorLabel
-            // 
-            ErrorLabel.AutoSize = true;
-            ErrorLabel.Location = new Point(12, 431);
-            ErrorLabel.Name = "ErrorLabel";
-            ErrorLabel.Size = new Size(61, 15);
-            ErrorLabel.TabIndex = 8;
-            ErrorLabel.Text = "ShowError";
+            guestButton.BackColor = SystemColors.ButtonHighlight;
+            guestButton.Location = new Point(257, 262);
+            guestButton.Name = "guestButton";
+            guestButton.Size = new Size(254, 23);
+            guestButton.TabIndex = 7;
+            guestButton.Text = "Кнопка гостя";
+            guestButton.UseVisualStyleBackColor = false;
+            guestButton.Click += guestButton_Click;
             // 
             // AutorizationForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(803, 466);
-            Controls.Add(ErrorLabel);
-            Controls.Add(Guestbtn);
+            Controls.Add(guestButton);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(PasswordTextBox);
-            Controls.Add(UsernameTextBox);
-            Controls.Add(Loginbtn);
-            Controls.Add(Registrationbtn);
+            Controls.Add(passwordTextBox);
+            Controls.Add(usernameTextBox);
+            Controls.Add(loginButton);
+            Controls.Add(registrationButton);
             Name = "AutorizationForm";
             Text = "AutorizationForm";
             ResumeLayout(false);
@@ -149,14 +138,13 @@
 
         #endregion
 
-        private Button Registrationbtn;
-        private Button Loginbtn;
-        private TextBox UsernameTextBox;
-        private TextBox PasswordTextBox;
+        private Button registrationButton;
+        private Button loginButton;
+        private TextBox usernameTextBox;
+        private TextBox passwordTextBox;
         private Label label1;
         private Label label2;
         private Label label3;
-        private Button Guestbtn;
-        private Label ErrorLabel;
+        private Button guestButton;
     }
 }

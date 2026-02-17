@@ -28,57 +28,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Closebtn = new Button();
-            ClientPanel = new Panel();
-            BuyProductbtn = new Button();
+            closeButton = new Button();
+            clientPanel = new Panel();
+            buyProductButton = new Button();
             label1 = new Label();
-            ManagerPanel = new Panel();
-            ManageControlOrdersbtn = new Button();
-            ManageControlProductbtn = new Button();
+            managerPanel = new Panel();
+            manageControlOrdersButton = new Button();
+            manageControlProductButton = new Button();
             label2 = new Label();
-            AdminPanel = new Panel();
-            AdminControlOrdersbtn = new Button();
-            AdminControlProductbtn = new Button();
-            Exportbtn = new Button();
+            adminPanel = new Panel();
+            adminControlOrdersButton = new Button();
+            adminControlProductButton = new Button();
+            exportButton = new Button();
             label3 = new Label();
-            ErrorLabel = new Label();
-            ClientPanel.SuspendLayout();
-            ManagerPanel.SuspendLayout();
-            AdminPanel.SuspendLayout();
+            clientPanel.SuspendLayout();
+            managerPanel.SuspendLayout();
+            adminPanel.SuspendLayout();
             SuspendLayout();
             // 
-            // Closebtn
+            // closeButton
             // 
-            Closebtn.BackColor = Color.FromArgb(255, 128, 128);
-            Closebtn.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            Closebtn.Location = new Point(40, 395);
-            Closebtn.Name = "Closebtn";
-            Closebtn.Size = new Size(95, 57);
-            Closebtn.TabIndex = 0;
-            Closebtn.Text = "Выход";
-            Closebtn.UseVisualStyleBackColor = false;
-            Closebtn.Click += Closebtn_Click;
+            closeButton.BackColor = Color.FromArgb(255, 128, 128);
+            closeButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            closeButton.Location = new Point(40, 395);
+            closeButton.Name = "closeButton";
+            closeButton.Size = new Size(95, 57);
+            closeButton.TabIndex = 0;
+            closeButton.Text = "Выход";
+            closeButton.UseVisualStyleBackColor = false;
+            closeButton.Click += closeButton_Click;
             // 
-            // ClientPanel
+            // clientPanel
             // 
-            ClientPanel.Controls.Add(BuyProductbtn);
-            ClientPanel.Controls.Add(label1);
-            ClientPanel.Location = new Point(68, 41);
-            ClientPanel.Name = "ClientPanel";
-            ClientPanel.Size = new Size(185, 149);
-            ClientPanel.TabIndex = 1;
-            ClientPanel.Paint += ClientPanel_Paint;
+            clientPanel.Controls.Add(buyProductButton);
+            clientPanel.Controls.Add(label1);
+            clientPanel.Location = new Point(68, 41);
+            clientPanel.Name = "clientPanel";
+            clientPanel.Size = new Size(185, 149);
+            clientPanel.TabIndex = 1;
+            clientPanel.Paint += clientPanel_Paint;
             // 
-            // BuyProductbtn
+            // buyProductButton
             // 
-            BuyProductbtn.BackColor = SystemColors.ButtonHighlight;
-            BuyProductbtn.Location = new Point(13, 53);
-            BuyProductbtn.Name = "BuyProductbtn";
-            BuyProductbtn.Size = new Size(160, 52);
-            BuyProductbtn.TabIndex = 4;
-            BuyProductbtn.Text = "Купить товар";
-            BuyProductbtn.UseVisualStyleBackColor = false;
-            BuyProductbtn.Click += BuyProductbtn_Click;
+            buyProductButton.BackColor = SystemColors.ButtonHighlight;
+            buyProductButton.Location = new Point(13, 53);
+            buyProductButton.Name = "buyProductButton";
+            buyProductButton.Size = new Size(160, 52);
+            buyProductButton.TabIndex = 4;
+            buyProductButton.Text = "Купить товар";
+            buyProductButton.UseVisualStyleBackColor = false;
+            buyProductButton.Click += buyProductButton_Click;
             // 
             // label1
             // 
@@ -90,38 +89,38 @@
             label1.TabIndex = 0;
             label1.Text = "Панель клиента";
             // 
-            // ManagerPanel
+            // managerPanel
             // 
-            ManagerPanel.Controls.Add(ManageControlOrdersbtn);
-            ManagerPanel.Controls.Add(ManageControlProductbtn);
-            ManagerPanel.Controls.Add(label2);
-            ManagerPanel.Location = new Point(361, 41);
-            ManagerPanel.Name = "ManagerPanel";
-            ManagerPanel.Size = new Size(194, 215);
-            ManagerPanel.TabIndex = 2;
-            ManagerPanel.Paint += ManagerPanel_Paint;
+            managerPanel.Controls.Add(manageControlOrdersButton);
+            managerPanel.Controls.Add(manageControlProductButton);
+            managerPanel.Controls.Add(label2);
+            managerPanel.Location = new Point(361, 41);
+            managerPanel.Name = "managerPanel";
+            managerPanel.Size = new Size(194, 215);
+            managerPanel.TabIndex = 2;
+            managerPanel.Paint += managerPanel_Paint;
             // 
-            // ManageControlOrdersbtn
+            // manageControlOrdersButton
             // 
-            ManageControlOrdersbtn.BackColor = SystemColors.ButtonHighlight;
-            ManageControlOrdersbtn.Location = new Point(24, 124);
-            ManageControlOrdersbtn.Name = "ManageControlOrdersbtn";
-            ManageControlOrdersbtn.Size = new Size(145, 48);
-            ManageControlOrdersbtn.TabIndex = 3;
-            ManageControlOrdersbtn.Text = "Управление заказа";
-            ManageControlOrdersbtn.UseVisualStyleBackColor = false;
-            ManageControlOrdersbtn.Click += ManageControlOrdersbtn_Click;
+            manageControlOrdersButton.BackColor = SystemColors.ButtonHighlight;
+            manageControlOrdersButton.Location = new Point(24, 124);
+            manageControlOrdersButton.Name = "manageControlOrdersButton";
+            manageControlOrdersButton.Size = new Size(145, 48);
+            manageControlOrdersButton.TabIndex = 3;
+            manageControlOrdersButton.Text = "Управление заказа";
+            manageControlOrdersButton.UseVisualStyleBackColor = false;
+            manageControlOrdersButton.Click += manageControlOrdersButton_Click;
             // 
-            // ManageControlProductbtn
+            // manageControlProductButton
             // 
-            ManageControlProductbtn.BackColor = SystemColors.ButtonHighlight;
-            ManageControlProductbtn.Location = new Point(24, 53);
-            ManageControlProductbtn.Name = "ManageControlProductbtn";
-            ManageControlProductbtn.Size = new Size(145, 52);
-            ManageControlProductbtn.TabIndex = 2;
-            ManageControlProductbtn.Text = "Управление товара";
-            ManageControlProductbtn.UseVisualStyleBackColor = false;
-            ManageControlProductbtn.Click += ManageControlProductbtn_Click;
+            manageControlProductButton.BackColor = SystemColors.ButtonHighlight;
+            manageControlProductButton.Location = new Point(24, 53);
+            manageControlProductButton.Name = "manageControlProductButton";
+            manageControlProductButton.Size = new Size(145, 52);
+            manageControlProductButton.TabIndex = 2;
+            manageControlProductButton.Text = "Управление товара";
+            manageControlProductButton.UseVisualStyleBackColor = false;
+            manageControlProductButton.Click += manageControlProductButton_Click;
             // 
             // label2
             // 
@@ -133,50 +132,50 @@
             label2.TabIndex = 0;
             label2.Text = "Панель менеджера";
             // 
-            // AdminPanel
+            // adminPanel
             // 
-            AdminPanel.Controls.Add(AdminControlOrdersbtn);
-            AdminPanel.Controls.Add(AdminControlProductbtn);
-            AdminPanel.Controls.Add(Exportbtn);
-            AdminPanel.Controls.Add(label3);
-            AdminPanel.Location = new Point(675, 41);
-            AdminPanel.Name = "AdminPanel";
-            AdminPanel.Size = new Size(219, 269);
-            AdminPanel.TabIndex = 3;
-            AdminPanel.Paint += AdminPanel_Paint;
+            adminPanel.Controls.Add(adminControlOrdersButton);
+            adminPanel.Controls.Add(adminControlProductButton);
+            adminPanel.Controls.Add(exportButton);
+            adminPanel.Controls.Add(label3);
+            adminPanel.Location = new Point(675, 41);
+            adminPanel.Name = "adminPanel";
+            adminPanel.Size = new Size(219, 269);
+            adminPanel.TabIndex = 3;
+            adminPanel.Paint += adminPanel_Paint;
             // 
-            // AdminControlOrdersbtn
+            // adminControlOrdersButton
             // 
-            AdminControlOrdersbtn.BackColor = SystemColors.ButtonHighlight;
-            AdminControlOrdersbtn.Location = new Point(19, 190);
-            AdminControlOrdersbtn.Name = "AdminControlOrdersbtn";
-            AdminControlOrdersbtn.Size = new Size(175, 48);
-            AdminControlOrdersbtn.TabIndex = 5;
-            AdminControlOrdersbtn.Text = "Управление заказа";
-            AdminControlOrdersbtn.UseVisualStyleBackColor = false;
-            AdminControlOrdersbtn.Click += AdminControlOrdersbtn_Click;
+            adminControlOrdersButton.BackColor = SystemColors.ButtonHighlight;
+            adminControlOrdersButton.Location = new Point(19, 190);
+            adminControlOrdersButton.Name = "adminControlOrdersButton";
+            adminControlOrdersButton.Size = new Size(175, 48);
+            adminControlOrdersButton.TabIndex = 5;
+            adminControlOrdersButton.Text = "Управление заказа";
+            adminControlOrdersButton.UseVisualStyleBackColor = false;
+            adminControlOrdersButton.Click += adminControlOrdersButton_Click;
             // 
-            // AdminControlProductbtn
+            // adminControlProductButton
             // 
-            AdminControlProductbtn.BackColor = SystemColors.ButtonHighlight;
-            AdminControlProductbtn.Location = new Point(19, 124);
-            AdminControlProductbtn.Name = "AdminControlProductbtn";
-            AdminControlProductbtn.Size = new Size(175, 48);
-            AdminControlProductbtn.TabIndex = 4;
-            AdminControlProductbtn.Text = "Управление товара";
-            AdminControlProductbtn.UseVisualStyleBackColor = false;
-            AdminControlProductbtn.Click += AdminControlProductbtn_Click;
+            adminControlProductButton.BackColor = SystemColors.ButtonHighlight;
+            adminControlProductButton.Location = new Point(19, 124);
+            adminControlProductButton.Name = "adminControlProductButton";
+            adminControlProductButton.Size = new Size(175, 48);
+            adminControlProductButton.TabIndex = 4;
+            adminControlProductButton.Text = "Управление товара";
+            adminControlProductButton.UseVisualStyleBackColor = false;
+            adminControlProductButton.Click += adminControlProductButton_Click;
             // 
-            // Exportbtn
+            // exportButton
             // 
-            Exportbtn.BackColor = SystemColors.ButtonHighlight;
-            Exportbtn.Location = new Point(19, 53);
-            Exportbtn.Name = "Exportbtn";
-            Exportbtn.Size = new Size(175, 52);
-            Exportbtn.TabIndex = 1;
-            Exportbtn.Text = "Экспорт";
-            Exportbtn.UseVisualStyleBackColor = false;
-            Exportbtn.Click += Exportbtn_Click;
+            exportButton.BackColor = SystemColors.ButtonHighlight;
+            exportButton.Location = new Point(19, 53);
+            exportButton.Name = "exportButton";
+            exportButton.Size = new Size(175, 52);
+            exportButton.TabIndex = 1;
+            exportButton.Text = "Экспорт";
+            exportButton.UseVisualStyleBackColor = false;
+            exportButton.Click += exportButton_Click;
             // 
             // label3
             // 
@@ -188,52 +187,40 @@
             label3.TabIndex = 0;
             label3.Text = "Панель администратора";
             // 
-            // ErrorLabel
-            // 
-            ErrorLabel.AutoSize = true;
-            ErrorLabel.Location = new Point(40, 465);
-            ErrorLabel.Name = "ErrorLabel";
-            ErrorLabel.Size = new Size(61, 15);
-            ErrorLabel.TabIndex = 9;
-            ErrorLabel.Text = "ShowError";
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1007, 489);
-            Controls.Add(ErrorLabel);
-            Controls.Add(AdminPanel);
-            Controls.Add(ManagerPanel);
-            Controls.Add(ClientPanel);
-            Controls.Add(Closebtn);
+            Controls.Add(adminPanel);
+            Controls.Add(managerPanel);
+            Controls.Add(clientPanel);
+            Controls.Add(closeButton);
             Name = "MainForm";
             Text = "MainForm";
-            ClientPanel.ResumeLayout(false);
-            ClientPanel.PerformLayout();
-            ManagerPanel.ResumeLayout(false);
-            ManagerPanel.PerformLayout();
-            AdminPanel.ResumeLayout(false);
-            AdminPanel.PerformLayout();
+            clientPanel.ResumeLayout(false);
+            clientPanel.PerformLayout();
+            managerPanel.ResumeLayout(false);
+            managerPanel.PerformLayout();
+            adminPanel.ResumeLayout(false);
+            adminPanel.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
-        private Button Closebtn;
-        private Panel ClientPanel;
-        private Panel ManagerPanel;
-        private Panel AdminPanel;
-        private Button BuyProductbtn;
+        private Button closeButton;
+        private Panel clientPanel;
+        private Panel managerPanel;
+        private Panel adminPanel;
+        private Button buyProductButton;
         private Label label1;
-        private Button ManageControlOrdersbtn;
-        private Button ManageControlProductbtn;
+        private Button manageControlOrdersButton;
+        private Button manageControlProductButton;
         private Label label2;
-        private Button AdminControlOrdersbtn;
-        private Button AdminControlProductbtn;
-        private Button Exportbtn;
+        private Button adminControlOrdersButton;
+        private Button adminControlProductButton;
+        private Button exportButton;
         private Label label3;
-        private Label ErrorLabel;
     }
 }

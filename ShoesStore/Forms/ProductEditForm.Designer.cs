@@ -28,17 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            errorLabel = new Label();
             descriptionPanel = new Panel();
             descriptionTextBox = new TextBox();
             descriptionLabel = new Label();
-            additionalInfoPanel = new Panel();
-            brandTextBox = new TextBox();
-            sizeLabel = new Label();
-            colorLabel = new Label();
-            brandLabel = new Label();
-            sizeTextBox = new TextBox();
-            colorTextBox = new TextBox();
             basicInfoPanel = new Panel();
             nameLabel = new Label();
             categoryLabel = new Label();
@@ -49,34 +41,22 @@
             priceTextBox = new TextBox();
             stockTextBox = new TextBox();
             buttonsPanel = new Panel();
-            CancelButton = new Button();
+            cancelButton = new Button();
             loadSampleDataButton = new Button();
             saveButton = new Button();
             generateIdButton = new Button();
-            clearButton = new Button();
+            ClearButton = new Button();
             previewButton = new Button();
             descriptionPanel.SuspendLayout();
-            additionalInfoPanel.SuspendLayout();
             basicInfoPanel.SuspendLayout();
             buttonsPanel.SuspendLayout();
             SuspendLayout();
-            // 
-            // errorLabel
-            // 
-            errorLabel.AutoSize = true;
-            errorLabel.BackColor = SystemColors.Control;
-            errorLabel.ForeColor = Color.Red;
-            errorLabel.Location = new Point(28, 414);
-            errorLabel.Name = "errorLabel";
-            errorLabel.Size = new Size(61, 15);
-            errorLabel.TabIndex = 34;
-            errorLabel.Text = "ShowError";
             // 
             // descriptionPanel
             // 
             descriptionPanel.Controls.Add(descriptionTextBox);
             descriptionPanel.Controls.Add(descriptionLabel);
-            descriptionPanel.Location = new Point(482, 21);
+            descriptionPanel.Location = new Point(445, 100);
             descriptionPanel.Name = "descriptionPanel";
             descriptionPanel.Size = new Size(294, 100);
             descriptionPanel.TabIndex = 33;
@@ -98,70 +78,6 @@
             descriptionLabel.TabIndex = 8;
             descriptionLabel.Text = "Описание:";
             // 
-            // additionalInfoPanel
-            // 
-            additionalInfoPanel.Controls.Add(brandTextBox);
-            additionalInfoPanel.Controls.Add(sizeLabel);
-            additionalInfoPanel.Controls.Add(colorLabel);
-            additionalInfoPanel.Controls.Add(brandLabel);
-            additionalInfoPanel.Controls.Add(sizeTextBox);
-            additionalInfoPanel.Controls.Add(colorTextBox);
-            additionalInfoPanel.Location = new Point(261, 21);
-            additionalInfoPanel.Name = "additionalInfoPanel";
-            additionalInfoPanel.Size = new Size(200, 162);
-            additionalInfoPanel.TabIndex = 32;
-            // 
-            // brandTextBox
-            // 
-            brandTextBox.Location = new Point(38, 118);
-            brandTextBox.Name = "brandTextBox";
-            brandTextBox.Size = new Size(131, 23);
-            brandTextBox.TabIndex = 15;
-            brandTextBox.Enter += brandTextBox_Enter;
-            // 
-            // sizeLabel
-            // 
-            sizeLabel.AutoSize = true;
-            sizeLabel.Location = new Point(38, 12);
-            sizeLabel.Name = "sizeLabel";
-            sizeLabel.Size = new Size(50, 15);
-            sizeLabel.TabIndex = 5;
-            sizeLabel.Text = "Размер:";
-            // 
-            // colorLabel
-            // 
-            colorLabel.AutoSize = true;
-            colorLabel.Location = new Point(38, 56);
-            colorLabel.Name = "colorLabel";
-            colorLabel.Size = new Size(36, 15);
-            colorLabel.TabIndex = 6;
-            colorLabel.Text = "Цвет:";
-            // 
-            // brandLabel
-            // 
-            brandLabel.AutoSize = true;
-            brandLabel.Location = new Point(38, 100);
-            brandLabel.Name = "brandLabel";
-            brandLabel.Size = new Size(43, 15);
-            brandLabel.TabIndex = 7;
-            brandLabel.Text = "Бренд:";
-            // 
-            // sizeTextBox
-            // 
-            sizeTextBox.Location = new Point(38, 30);
-            sizeTextBox.Name = "sizeTextBox";
-            sizeTextBox.Size = new Size(131, 23);
-            sizeTextBox.TabIndex = 13;
-            sizeTextBox.KeyPress += sizeTextBox_KeyPress;
-            // 
-            // colorTextBox
-            // 
-            colorTextBox.Location = new Point(38, 74);
-            colorTextBox.Name = "colorTextBox";
-            colorTextBox.Size = new Size(131, 23);
-            colorTextBox.TabIndex = 14;
-            colorTextBox.TextChanged += colorTextBox_TextChanged;
-            // 
             // basicInfoPanel
             // 
             basicInfoPanel.Controls.Add(nameLabel);
@@ -172,7 +88,7 @@
             basicInfoPanel.Controls.Add(categoryTextBox);
             basicInfoPanel.Controls.Add(priceTextBox);
             basicInfoPanel.Controls.Add(stockTextBox);
-            basicInfoPanel.Location = new Point(28, 21);
+            basicInfoPanel.Location = new Point(103, 44);
             basicInfoPanel.Name = "basicInfoPanel";
             basicInfoPanel.Size = new Size(200, 200);
             basicInfoPanel.TabIndex = 31;
@@ -248,29 +164,29 @@
             // 
             // buttonsPanel
             // 
-            buttonsPanel.Controls.Add(CancelButton);
+            buttonsPanel.Controls.Add(cancelButton);
             buttonsPanel.Controls.Add(loadSampleDataButton);
             buttonsPanel.Controls.Add(saveButton);
             buttonsPanel.Controls.Add(generateIdButton);
-            buttonsPanel.Controls.Add(clearButton);
+            buttonsPanel.Controls.Add(ClearButton);
             buttonsPanel.Controls.Add(previewButton);
             buttonsPanel.Location = new Point(10, 310);
             buttonsPanel.Name = "buttonsPanel";
             buttonsPanel.Size = new Size(780, 91);
             buttonsPanel.TabIndex = 30;
             // 
-            // CancelButton
+            // cancelButton
             // 
-            CancelButton.BackColor = Color.Red;
-            CancelButton.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            CancelButton.ForeColor = SystemColors.Control;
-            CancelButton.Location = new Point(653, 26);
-            CancelButton.Name = "CancelButton";
-            CancelButton.Size = new Size(113, 38);
-            CancelButton.TabIndex = 20;
-            CancelButton.Text = "Отмена";
-            CancelButton.UseVisualStyleBackColor = false;
-            CancelButton.Click += CancelButton_Click;
+            cancelButton.BackColor = Color.Red;
+            cancelButton.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            cancelButton.ForeColor = SystemColors.Control;
+            cancelButton.Location = new Point(653, 26);
+            cancelButton.Name = "cancelButton";
+            cancelButton.Size = new Size(113, 38);
+            cancelButton.TabIndex = 20;
+            cancelButton.Text = "Отмена";
+            cancelButton.UseVisualStyleBackColor = false;
+            cancelButton.Click += cancelButton_Click;
             // 
             // loadSampleDataButton
             // 
@@ -308,17 +224,17 @@
             generateIdButton.UseVisualStyleBackColor = false;
             generateIdButton.Click += generateIdButton_Click;
             // 
-            // clearButton
+            // ClearButton
             // 
-            clearButton.BackColor = SystemColors.ButtonHighlight;
-            clearButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            clearButton.Location = new Point(153, 26);
-            clearButton.Name = "clearButton";
-            clearButton.Size = new Size(119, 38);
-            clearButton.TabIndex = 21;
-            clearButton.Text = "Очистить";
-            clearButton.UseVisualStyleBackColor = false;
-            clearButton.Click += clearButton_Click;
+            ClearButton.BackColor = SystemColors.ButtonHighlight;
+            ClearButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            ClearButton.Location = new Point(153, 26);
+            ClearButton.Name = "ClearButton";
+            ClearButton.Size = new Size(119, 38);
+            ClearButton.TabIndex = 21;
+            ClearButton.Text = "Очистить";
+            ClearButton.UseVisualStyleBackColor = false;
+            ClearButton.Click += ClearButton_Click;
             // 
             // previewButton
             // 
@@ -337,37 +253,23 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(errorLabel);
             Controls.Add(descriptionPanel);
-            Controls.Add(additionalInfoPanel);
             Controls.Add(basicInfoPanel);
             Controls.Add(buttonsPanel);
             Name = "ProductEditForm";
             Text = "ProductEditForm";
             descriptionPanel.ResumeLayout(false);
             descriptionPanel.PerformLayout();
-            additionalInfoPanel.ResumeLayout(false);
-            additionalInfoPanel.PerformLayout();
             basicInfoPanel.ResumeLayout(false);
             basicInfoPanel.PerformLayout();
             buttonsPanel.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private Label errorLabel;
         private Panel descriptionPanel;
         private TextBox descriptionTextBox;
         private Label descriptionLabel;
-        private Panel additionalInfoPanel;
-        private TextBox brandTextBox;
-        private Label sizeLabel;
-        private Label colorLabel;
-        private Label brandLabel;
-        private TextBox sizeTextBox;
-        private TextBox colorTextBox;
         private Panel basicInfoPanel;
         private Label nameLabel;
         private Label categoryLabel;
@@ -378,11 +280,11 @@
         private TextBox priceTextBox;
         private TextBox stockTextBox;
         private Panel buttonsPanel;
-        private Button CancelButton;
+        private Button cancelButton;
         private Button loadSampleDataButton;
         private Button saveButton;
         private Button generateIdButton;
-        private Button clearButton;
+        private Button ClearButton;
         private Button previewButton;
     }
 }

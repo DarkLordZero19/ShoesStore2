@@ -16,186 +16,148 @@ namespace ShoesStore.Forms
     public partial class ProductEditForm : Form
     {
         private DataContext context;
-        private Products currentProduct;
-        private bool isNewMode;
-        public Products Product => currentProduct;
-
-        // Конструктор для создания нового товара
-        public ProductEditForm() : this(new Products(), true) { }
-
-        public ProductEditForm(Products product, bool isNew = false)
+        private Product currentProduct;
+        private bool isNewProduct;
+        public ProductEditForm()
         {
             InitializeComponent();
             context = new DataContext();
-            currentProduct = product;
-            isNewMode = isNew;
-
-            // Заполняем поля данными продукта
-            LoadProductData();
+            isNewProduct = true;
+            currentProduct = null;
         }
-
-        private void LoadProductData()
+        public ProductEditForm(Product product) : this()
         {
-            if (currentProduct != null)
+            if (product != null)
             {
-                nameTextBox.Text = currentProduct.Name;
-                categoryTextBox.Text = currentProduct.Category;
-                priceTextBox.Text = currentProduct.Price.ToString("F2");
-                stockTextBox.Text = currentProduct.StockQuantity.ToString();
-                sizeTextBox.Text = currentProduct.Size?.ToString() ?? "";
-                colorTextBox.Text = currentProduct.Color;
-                brandTextBox.Text = currentProduct.Brand;
-                descriptionTextBox.Text = currentProduct.Description;
+                currentProduct = product;
+                isNewProduct = false;
+                LoadProductData();
             }
         }
-        private void ShowError(string message)
+        private void LoadProductData()
         {
-            errorLabel.Text = message;
-            errorLabel.Visible = true;
-        }
+            if (currentProduct == null) return;
 
-        private void HideError()
-        {
-            errorLabel.Visible = false;
+            nameTextBox.Text = currentProduct.Name;
+            categoryTextBox.Text = currentProduct.Category ?? "";
+            priceTextBox.Text = currentProduct.Price.ToString("F2");
+            stockTextBox.Text = currentProduct.Quantity.ToString();
+            descriptionTextBox.Text = currentProduct.Description ?? "";
         }
-
-        // Проверка корректности введённых данных
-        private bool ValidateInputs()
+        private bool CollectProductData(out Product product)
         {
+            product = new Product();
+
             if (string.IsNullOrWhiteSpace(nameTextBox.Text))
             {
-                ShowError("Введите название товара");
+                MessageBox.Show("Введите название товара.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 nameTextBox.Focus();
                 return false;
             }
+            product.Name = nameTextBox.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(categoryTextBox.Text))
-            {
-                ShowError("Введите категорию");
-                categoryTextBox.Focus();
-                return false;
-            }
+            product.Category = string.IsNullOrWhiteSpace(categoryTextBox.Text) ? null : categoryTextBox.Text.Trim();
 
             if (!decimal.TryParse(priceTextBox.Text, out decimal price) || price <= 0)
             {
-                ShowError("Цена должна быть положительным числом");
+                MessageBox.Show("Введите корректную цену (положительное число).", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 priceTextBox.Focus();
                 return false;
             }
+            product.Price = price;
 
-            if (!int.TryParse(stockTextBox.Text, out int stock) || stock < 0)
+            if (!int.TryParse(stockTextBox.Text, out int quantity) || quantity < 0)
             {
-                ShowError("Количество на складе должно быть целым неотрицательным числом");
+                MessageBox.Show("Введите корректное количество (целое неотрицательное число).", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 stockTextBox.Focus();
                 return false;
             }
+            product.Quantity = quantity;
 
-            // Размер может быть пустым, но если заполнен, то число
-            if (!string.IsNullOrWhiteSpace(sizeTextBox.Text) && !int.TryParse(sizeTextBox.Text, out _))
+            product.Description = string.IsNullOrWhiteSpace(descriptionTextBox.Text) ? null : descriptionTextBox.Text.Trim();
+
+            if (!isNewProduct && currentProduct != null)
             {
-                ShowError("Размер должен быть целым числом");
-                sizeTextBox.Focus();
-                return false;
+                product.Id = currentProduct.Id;
             }
 
-            HideError();
             return true;
-        }
-
-        // Сохранение данных в объект
-        private void UpdateProductFromInputs()
-        {
-            currentProduct.Name = nameTextBox.Text.Trim();
-            currentProduct.Category = categoryTextBox.Text.Trim();
-            currentProduct.Price = decimal.Parse(priceTextBox.Text);
-            currentProduct.StockQuantity = int.Parse(stockTextBox.Text);
-
-            if (int.TryParse(sizeTextBox.Text, out int size))
-                currentProduct.Size = size;
-            else
-                currentProduct.Size = null;
-
-            currentProduct.Color = string.IsNullOrWhiteSpace(colorTextBox.Text) ? null : colorTextBox.Text.Trim();
-            currentProduct.Brand = string.IsNullOrWhiteSpace(brandTextBox.Text) ? null : brandTextBox.Text.Trim();
-            currentProduct.Description = string.IsNullOrWhiteSpace(descriptionTextBox.Text) ? null : descriptionTextBox.Text.Trim();
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            if (!ValidateInputs())
+            if (!CollectProductData(out Product product))
                 return;
 
-            UpdateProductFromInputs();
-
-            if (isNewMode)
+            try
             {
-                currentProduct.ID = Guid.NewGuid();
-                currentProduct.CreatedDate = DateTime.Now;
+                if (isNewProduct)
+                {
+                    context.AddProduct(product);
+                    MessageBox.Show("Товар успешно добавлен.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    context.UpdateProduct(product);
+                    MessageBox.Show("Товар успешно обновлён.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
-
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void clearButton_Click(object sender, EventArgs e)
+        private void ClearButton_Click(object sender, EventArgs e)
         {
             nameTextBox.Clear();
             categoryTextBox.Clear();
             priceTextBox.Clear();
             stockTextBox.Clear();
-            sizeTextBox.Clear();
-            colorTextBox.Clear();
-            brandTextBox.Clear();
             descriptionTextBox.Clear();
-            HideError();
+            nameTextBox.Focus();
         }
 
         private void previewButton_Click(object sender, EventArgs e)
         {
-            if (!ValidateInputs())
-                return;
-
-            UpdateProductFromInputs();
-
-            string preview = $"Название: {currentProduct.Name}\n" +
-                             $"Категория: {currentProduct.Category}\n" +
-                             $"Цена: {currentProduct.Price:C}\n" +
-                             $"Количество: {currentProduct.StockQuantity}\n" +
-                             $"Размер: {currentProduct.Size?.ToString() ?? "не указан"}\n" +
-                             $"Цвет: {currentProduct.Color ?? "не указан"}\n" +
-                             $"Бренд: {currentProduct.Brand ?? "не указан"}\n" +
-                             $"Описание: {currentProduct.Description ?? "не указан"}";
-
-            MessageBox.Show(preview, "Предпросмотр товара", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (CollectProductData(out Product product))
+            {
+                string info = $"Название: {product.Name}\n" +
+                              $"Категория: {product.Category ?? "—"}\n" +
+                              $"Цена: {product.Price:C2}\n" +
+                              $"Количество: {product.Quantity}\n" +
+                              $"Описание: {product.Description ?? "—"}";
+                MessageBox.Show(info, "Предпросмотр товара", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void generateIdButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"Сгенерированный ID: {Guid.NewGuid()}", "Генерация ID", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Random rnd = new Random();
+            priceTextBox.Text = (rnd.Next(500, 10000) / 100m).ToString("F2");
+            stockTextBox.Text = rnd.Next(1, 100).ToString();
         }
 
         private void loadSampleDataButton_Click(object sender, EventArgs e)
         {
-            nameTextBox.Text = "Кроссовки Nike Air";
-            categoryTextBox.Text = "Обувь";
-            priceTextBox.Text = "4999.99";
+            nameTextBox.Text = "Кроссовки Nike Air Max";
+            categoryTextBox.Text = "Кроссовки";
+            priceTextBox.Text = "7500";
             stockTextBox.Text = "15";
-            sizeTextBox.Text = "42";
-            colorTextBox.Text = "Черный";
-            brandTextBox.Text = "Nike";
-            descriptionTextBox.Text = "Легкие и удобные кроссовки для бега";
-            HideError();
+            descriptionTextBox.Text = "Легкие и удобные кроссовки для повседневной носки.";
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
+        private void cancelButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
-            Close();
+            this.Close();
         }
 
         private void nameTextBox_Enter(object sender, EventArgs e)
         {
-            HideError();
+
         }
 
         private void categoryTextBox_KeyUp(object sender, KeyEventArgs e)
@@ -205,38 +167,15 @@ namespace ShoesStore.Forms
 
         private void priceTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
-            {
-                e.Handled = true;
-            }
-            if (e.KeyChar == '.')
-                e.KeyChar = ',';
+
         }
 
         private void priceTextBox_Leave(object sender, EventArgs e)
         {
-            if (decimal.TryParse(priceTextBox.Text, out decimal value))
-                priceTextBox.Text = value.ToString("F2");
+
         }
 
         private void stockTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-                e.Handled = true;
-        }
-
-        private void sizeTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-                e.Handled = true;
-        }
-
-        private void colorTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void brandTextBox_Enter(object sender, EventArgs e)
         {
 
         }

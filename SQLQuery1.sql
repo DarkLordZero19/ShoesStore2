@@ -1,45 +1,37 @@
-﻿CREATE TABLE [dbo].[Users] (
-    [Id]          UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
-    [Username]    NVARCHAR (100)   NOT NULL,
-    [Password]    NVARCHAR (255)   NOT NULL,
-    [Role]        NVARCHAR (20)    NOT NULL,
-    [CreatedDate] DATETIME         DEFAULT (getdate()) NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
-    UNIQUE NONCLUSTERED ([Username] ASC),
-    CHECK ([Role]='Admin' OR [Role]='Manager' OR [Role]='Client')
+﻿-- Таблица Users
+CREATE TABLE Users (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Login NVARCHAR(50) NOT NULL UNIQUE,
+    Password NVARCHAR(100) NOT NULL,
+    Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Client', 'Manager', 'Admin'))
 );
 
-CREATE TABLE [dbo].[Products] (
-    [Id]            UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
-    [Name]          NVARCHAR (200)   NOT NULL,
-    [Description]   NVARCHAR (MAX)   NULL,
-    [Category]      NVARCHAR (100)   NOT NULL,
-    [Price]         DECIMAL (10, 2)  NOT NULL,
-    [StockQuantity] INT              DEFAULT ((0)) NOT NULL,
-    [Size]          INT              NULL,
-    [Color]         NVARCHAR (50)    NULL,
-    [Brand]         NVARCHAR (100)   NULL,
-    [CreatedDate]   DATETIME         DEFAULT (getdate()) NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
-    CHECK ([Price]>=(0)),
-    CHECK ([StockQuantity]>=(0))
+-- Таблица Products
+CREATE TABLE Products (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(500) NULL,
+    Price DECIMAL(10,2) NOT NULL,
+    Quantity INT NOT NULL DEFAULT 0,
+    Category NVARCHAR(50) NULL
 );
 
-CREATE TABLE [dbo].[Orders] (
-    [Id]              UNIQUEIDENTIFIER DEFAULT (newid()) NOT NULL,
-    [UserId]          UNIQUEIDENTIFIER NOT NULL,
-    [ProductId]       UNIQUEIDENTIFIER NOT NULL,
-    [Quantity]        INT              DEFAULT ((1)) NOT NULL,
-    [OrderDate]       DATETIME         DEFAULT (getdate()) NOT NULL,
-    [Status]          NVARCHAR (20)    DEFAULT ('Pending') NOT NULL,
-    [TotalPrice]      DECIMAL (10, 2)  NOT NULL,
-    [Notes]           NVARCHAR (500)   NULL,
-    [ShippingAddress] NVARCHAR (500)   NULL,
-    [Phone]           NVARCHAR (20)    NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
-    FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]),
-    FOREIGN KEY ([ProductId]) REFERENCES [dbo].[Products] ([Id]),
-    CHECK ([Quantity]>(0)),
-    CHECK ([Status]='Cancelled' OR [Status]='Delivered' OR [Status]='Shipped' OR [Status]='Processing' OR [Status]='Pending'),
-    CHECK ([TotalPrice]>=(0))
+-- Таблица Orders
+CREATE TABLE Orders (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('New', 'Processing', 'Completed', 'Cancelled')),
+    CONSTRAINT FK_Orders_Users FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+
+-- Таблица OrderItems
+CREATE TABLE OrderItems (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    OrderId INT NOT NULL,
+    ProductId INT NOT NULL,
+    Quantity INT NOT NULL,
+    Price DECIMAL(10,2) NOT NULL,
+    CONSTRAINT FK_OrderItems_Orders FOREIGN KEY (OrderId) REFERENCES Orders(Id) ON DELETE CASCADE,
+    CONSTRAINT FK_OrderItems_Products FOREIGN KEY (ProductId) REFERENCES Products(Id)
 );
