@@ -80,7 +80,7 @@ namespace ShoesStore.Data
             return products;
         }
 
-        //Получить товары с фильтрацией, поиском и сортировкой (для менеджера/админа)
+        //Получить товары с фильтрацией, поиском и сортировкой
         public List<Product> GetProducts(string categoryFilter, string searchText, string sortBy)
         {
             List<Product> products = new List<Product>();
@@ -260,7 +260,7 @@ namespace ShoesStore.Data
             return items;
         }
 
-        //Добавить новый заказ вместе с позициями (в одной транзакции)
+        //Добавить новый заказ вместе с позициями
         public void AddOrder(Order order, List<OrderItem> items)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -313,7 +313,7 @@ namespace ShoesStore.Data
             }
         }
 
-        //Удалить заказ (позиции удалятся каскадно)
+        //Удалить заказ
         public void DeleteOrder(int orderId)
         {
             string query = "DELETE FROM Orders WHERE Id = @Id";
