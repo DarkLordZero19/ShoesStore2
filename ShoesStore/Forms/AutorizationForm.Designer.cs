@@ -41,7 +41,7 @@
             // registrationButton
             // 
             registrationButton.BackColor = SystemColors.ButtonHighlight;
-            registrationButton.Location = new Point(257, 308);
+            registrationButton.Location = new Point(259, 279);
             registrationButton.Name = "registrationButton";
             registrationButton.Size = new Size(102, 49);
             registrationButton.TabIndex = 0;
@@ -52,7 +52,7 @@
             // loginButton
             // 
             loginButton.BackColor = SystemColors.ButtonHighlight;
-            loginButton.Location = new Point(404, 308);
+            loginButton.Location = new Point(406, 279);
             loginButton.Name = "loginButton";
             loginButton.Size = new Size(107, 49);
             loginButton.TabIndex = 1;
@@ -62,7 +62,7 @@
             // 
             // usernameTextBox
             // 
-            usernameTextBox.Location = new Point(257, 164);
+            usernameTextBox.Location = new Point(259, 135);
             usernameTextBox.Name = "usernameTextBox";
             usernameTextBox.Size = new Size(254, 23);
             usernameTextBox.TabIndex = 2;
@@ -70,7 +70,7 @@
             // 
             // passwordTextBox
             // 
-            passwordTextBox.Location = new Point(257, 233);
+            passwordTextBox.Location = new Point(259, 204);
             passwordTextBox.Name = "passwordTextBox";
             passwordTextBox.Size = new Size(254, 23);
             passwordTextBox.TabIndex = 3;
@@ -90,7 +90,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            label2.Location = new Point(257, 136);
+            label2.Location = new Point(259, 107);
             label2.Name = "label2";
             label2.Size = new Size(44, 21);
             label2.TabIndex = 5;
@@ -100,7 +100,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            label3.Location = new Point(257, 200);
+            label3.Location = new Point(259, 171);
             label3.Name = "label3";
             label3.Size = new Size(70, 21);
             label3.TabIndex = 6;
@@ -109,7 +109,7 @@
             // guestButton
             // 
             guestButton.BackColor = SystemColors.ButtonHighlight;
-            guestButton.Location = new Point(257, 262);
+            guestButton.Location = new Point(259, 233);
             guestButton.Name = "guestButton";
             guestButton.Size = new Size(254, 23);
             guestButton.TabIndex = 7;
