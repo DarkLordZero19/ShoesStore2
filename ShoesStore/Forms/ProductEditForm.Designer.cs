@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProductEditForm));
             descriptionPanel = new Panel();
             descriptionTextBox = new TextBox();
             descriptionLabel = new Label();
@@ -256,8 +257,9 @@
             Controls.Add(descriptionPanel);
             Controls.Add(basicInfoPanel);
             Controls.Add(buttonsPanel);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ProductEditForm";
-            Text = "ProductEditForm";
+            Text = "Редактирование Товара";
             descriptionPanel.ResumeLayout(false);
             descriptionPanel.PerformLayout();
             basicInfoPanel.ResumeLayout(false);

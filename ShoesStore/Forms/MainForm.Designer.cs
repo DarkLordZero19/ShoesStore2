@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             closeButton = new Button();
             clientPanel = new Panel();
             buyProductButton = new Button();
@@ -41,9 +42,12 @@
             adminControlProductButton = new Button();
             exportButton = new Button();
             label3 = new Label();
+            userFullNameLabel = new Label();
+            companyLogoPictureBox = new PictureBox();
             clientPanel.SuspendLayout();
             managerPanel.SuspendLayout();
             adminPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)companyLogoPictureBox).BeginInit();
             SuspendLayout();
             // 
             // closeButton
@@ -62,7 +66,7 @@
             // 
             clientPanel.Controls.Add(buyProductButton);
             clientPanel.Controls.Add(label1);
-            clientPanel.Location = new Point(68, 41);
+            clientPanel.Location = new Point(232, 41);
             clientPanel.Name = "clientPanel";
             clientPanel.Size = new Size(185, 149);
             clientPanel.TabIndex = 1;
@@ -94,7 +98,7 @@
             managerPanel.Controls.Add(manageControlOrdersButton);
             managerPanel.Controls.Add(manageControlProductButton);
             managerPanel.Controls.Add(label2);
-            managerPanel.Location = new Point(361, 41);
+            managerPanel.Location = new Point(486, 41);
             managerPanel.Name = "managerPanel";
             managerPanel.Size = new Size(194, 215);
             managerPanel.TabIndex = 2;
@@ -138,7 +142,7 @@
             adminPanel.Controls.Add(adminControlProductButton);
             adminPanel.Controls.Add(exportButton);
             adminPanel.Controls.Add(label3);
-            adminPanel.Location = new Point(675, 41);
+            adminPanel.Location = new Point(756, 41);
             adminPanel.Name = "adminPanel";
             adminPanel.Size = new Size(219, 269);
             adminPanel.TabIndex = 3;
@@ -187,24 +191,49 @@
             label3.TabIndex = 0;
             label3.Text = "Панель администратора";
             // 
+            // userFullNameLabel
+            // 
+            userFullNameLabel.AutoSize = true;
+            userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            userFullNameLabel.Location = new Point(786, 9);
+            userFullNameLabel.Name = "userFullNameLabel";
+            userFullNameLabel.Size = new Size(112, 15);
+            userFullNameLabel.TabIndex = 4;
+            userFullNameLabel.Text = "userFullNameLabel";
+            // 
+            // companyLogoPictureBox
+            // 
+            companyLogoPictureBox.ErrorImage = Properties.Resources.error;
+            companyLogoPictureBox.InitialImage = (Image)resources.GetObject("companyLogoPictureBox.InitialImage");
+            companyLogoPictureBox.Location = new Point(12, 41);
+            companyLogoPictureBox.Name = "companyLogoPictureBox";
+            companyLogoPictureBox.Size = new Size(177, 149);
+            companyLogoPictureBox.TabIndex = 5;
+            companyLogoPictureBox.TabStop = false;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1007, 489);
+            Controls.Add(companyLogoPictureBox);
+            Controls.Add(userFullNameLabel);
             Controls.Add(adminPanel);
             Controls.Add(managerPanel);
             Controls.Add(clientPanel);
             Controls.Add(closeButton);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
-            Text = "MainForm";
+            Text = "Панель Пользователя";
             clientPanel.ResumeLayout(false);
             clientPanel.PerformLayout();
             managerPanel.ResumeLayout(false);
             managerPanel.PerformLayout();
             adminPanel.ResumeLayout(false);
             adminPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)companyLogoPictureBox).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -222,5 +251,7 @@
         private Button adminControlProductButton;
         private Button exportButton;
         private Label label3;
+        private Label userFullNameLabel;
+        private PictureBox companyLogoPictureBox;
     }
 }

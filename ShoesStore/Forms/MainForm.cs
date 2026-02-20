@@ -26,6 +26,13 @@ namespace ShoesStore.Forms
         public MainForm(User user) : this()
         {
             currentUser = user;
+            if (user != null)
+            {
+                if (!string.IsNullOrEmpty(user.FullName))
+                    userFullNameLabel.Text = user.FullName;
+                else
+                    userFullNameLabel.Text = user.Login;
+            }
             ConfigureUIBasedOnRole();
         }
 

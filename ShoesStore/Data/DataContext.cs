@@ -21,7 +21,7 @@ namespace ShoesStore.Data
         public User GetUser(string login, string password)
         {
             User user = null;
-            string query = "SELECT Id, Login, Password, Role FROM Users WHERE Login = @Login AND Password = @Password";
+            string query = "SELECT Id, Login, Password, Role, FullName FROM Users WHERE Login = @Login AND Password = @Password";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand command = new SqlCommand(query, connection);
@@ -37,7 +37,8 @@ namespace ShoesStore.Data
                             Id = reader.GetInt32(0),
                             Login = reader.GetString(1),
                             Password = reader.GetString(2),
-                            Role = reader.GetString(3)
+                            Role = reader.GetString(3),
+                            FullName = reader.IsDBNull(4) ? null : reader.GetString(4)
                         };
                     }
                 }
@@ -328,6 +329,20 @@ namespace ShoesStore.Data
                 command.Parameters.AddWithValue("@Id", orderId);
                 connection.Open();
                 command.ExecuteNonQuery();
+            }
+        }
+
+        //Проверка удаления заказа
+        public bool IsProductUsedInOrders(int productId)
+        {
+            string query = "SELECT COUNT(*) FROM OrderItems WHERE ProductId = @ProductId";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@ProductId", productId);
+                connection.Open();
+                int count = (int)command.ExecuteScalar();
+                return count > 0;
             }
         }
     }

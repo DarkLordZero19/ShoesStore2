@@ -17,22 +17,30 @@ namespace ShoesStore.Forms
     {
         private DataContext context;
         private User currentUser;
-        private List<Product> currentProducts; 
-        private List<Order> currentOrders;
-        private List<OrderItem> currentOrderItems;
+        private BindingList<Product> currentProducts;
+        //DataGridView.DataSource = currentProducts;
+        private BindingList<Order> currentOrders;
+        private BindingList<OrderItem> currentOrderItems;
 
         public ManagementForm()
         {
             InitializeComponent();
             context = new DataContext();
-            currentProducts = new List<Product>();
-            currentOrders = new List<Order>();
-            currentOrderItems = new List<OrderItem>();
+            currentProducts = new BindingList<Product>();
+            currentOrders = new BindingList<Order>();
+            currentOrderItems = new BindingList<OrderItem>();
         }
 
         public ManagementForm(User user, string initialTab) : this()
         {
             currentUser = user;
+            if (user != null)
+            {
+                if (!string.IsNullOrEmpty(user.FullName))
+                    userFullNameLabel.Text = user.FullName;
+                else
+                    userFullNameLabel.Text = user.Login;
+            }
             ConfigureTabsBasedOnRole();
             SelectTab(initialTab);
         }
@@ -89,16 +97,13 @@ namespace ShoesStore.Forms
                 string search = productSearchTextBox.Text.Trim();
                 string sort = productSortComboBox.SelectedItem?.ToString();
 
-                currentProducts = context.GetProducts(category, search, sort);
+                List<Product> products = context.GetProducts(category, search, sort);
+                currentProducts = new BindingList<Product>(products);
+
                 productsDataGridView.DataSource = null;
                 productsDataGridView.DataSource = currentProducts;
 
-                productsDataGridView.Columns["Id"].HeaderText = "ID";
-                productsDataGridView.Columns["Name"].HeaderText = "Название";
-                productsDataGridView.Columns["Price"].HeaderText = "Цена";
-                productsDataGridView.Columns["Quantity"].HeaderText = "Остаток";
-                productsDataGridView.Columns["Category"].HeaderText = "Категория";
-                productsDataGridView.Columns["Description"].HeaderText = "Описание";
+                productsDataGridView.Columns["Id"].Visible = false;
 
                 productsStatsLabel.Text = $"Всего товаров: {currentProducts.Count}";
                 statusLabel.Text = "Готово";
@@ -305,15 +310,17 @@ namespace ShoesStore.Forms
                 if (statusFilter == "Все") statusFilter = null;
                 string search = orderSearchTextBox.Text.Trim();
 
-                currentOrders = context.GetOrders(null, null, null, statusFilter);
+                List<Order> orders = context.GetOrders(null, null, null, statusFilter);
 
                 if (!string.IsNullOrEmpty(search))
                 {
-                    currentOrders = currentOrders.Where(o =>
+                    orders = orders.Where(o =>
                         o.Id.ToString().Contains(search) ||
                         GetUserLogin(o.UserId).IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0
                     ).ToList();
                 }
+
+                currentOrders = new BindingList<Order>(orders);
 
                 var displayOrders = currentOrders.Select(o => new
                 {
@@ -326,6 +333,9 @@ namespace ShoesStore.Forms
 
                 ordersDataGridView.DataSource = null;
                 ordersDataGridView.DataSource = displayOrders;
+                if (ordersDataGridView.Columns["Id"] != null)
+                    ordersDataGridView.Columns["Id"].Visible = false;
+
 
                 ordersStatsLabel.Text = $"Всего заказов: {currentOrders.Count}";
                 statusLabel.Text = "Готово";
@@ -383,7 +393,9 @@ namespace ShoesStore.Forms
                     orderCustomerLabel.Text = GetUserLogin(order.UserId);
                     orderStatusLabel.Text = order.Status;
 
-                    currentOrderItems = context.GetOrderItems(orderId);
+                    List<OrderItem> items = context.GetOrderItems(orderId);
+                    currentOrderItems = new BindingList<OrderItem>(items);
+
                     orderTotalLabelDetails.Text = currentOrderItems.Sum(i => i.Price * i.Quantity).ToString("C2");
 
                     if (currentOrderItems.Count > 0)
@@ -443,25 +455,30 @@ namespace ShoesStore.Forms
 
         private void deleteOrderButton_Click(object sender, EventArgs e)
         {
-            if (ordersDataGridView.SelectedRows.Count == 0)
+            if (productsDataGridView.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите заказ для удаления.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Выберите товар для удаления.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            dynamic selected = ordersDataGridView.SelectedRows[0].DataBoundItem;
+            Product selected = productsDataGridView.SelectedRows[0].DataBoundItem as Product;
             if (selected != null)
             {
-                int orderId = selected.Id;
-                DialogResult result = MessageBox.Show($"Удалить заказ №{orderId}?", "Подтверждение",
+                if (context.IsProductUsedInOrders(selected.Id))
+                {
+                    MessageBox.Show("Невозможно удалить товар, так как он присутствует в заказах.\nСначала удалите связанные заказы или их позиции.",
+                        "Ошибка удаления", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                DialogResult result = MessageBox.Show($"Удалить товар \"{selected.Name}\"?", "Подтверждение",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     try
                     {
-                        context.DeleteOrder(orderId);
-                        LoadOrders();
-                        statusLabel.Text = "Заказ удалён";
+                        context.DeleteProduct(selected.Id);
+                        LoadProducts();
+                        FillCategoryFilter();
+                        statusLabel.Text = "Товар удалён";
                     }
                     catch (Exception ex)
                     {

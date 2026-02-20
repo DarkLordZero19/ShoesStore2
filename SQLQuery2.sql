@@ -1,8 +1,8 @@
 ﻿-- Добавление пользователей
-INSERT INTO Users (Login, Password, Role) VALUES
-('admin', 'admin123', 'Admin'),
-('manager', 'manager123', 'Manager'),
-('client', 'client123', 'Client');
+INSERT INTO Users (Login, Password, Role, FullName) VALUES
+('admin', 'admin123', 'Admin', N'Иванов Иван Иванович'),
+('manager', 'manager123', 'Manager', N'Петров Петр Петрович'),
+('client', 'client123', 'Client', N'Сидорова Анна Сергеевна');
 
 -- Добавление товаров
 INSERT INTO Products (Name, Description, Price, Quantity, Category) VALUES

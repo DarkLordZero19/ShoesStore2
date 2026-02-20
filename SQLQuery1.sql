@@ -3,7 +3,8 @@ CREATE TABLE Users (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Login NVARCHAR(50) NOT NULL UNIQUE,
     Password NVARCHAR(100) NOT NULL,
-    Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Client', 'Manager', 'Admin'))
+    Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Client', 'Manager', 'Admin')),
+    FullName NVARCHAR(100) NULL
 );
 
 -- Таблица Products

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManagementForm));
             tabControl1 = new TabControl();
             productsTab = new TabPage();
             panel2 = new Panel();
@@ -83,6 +84,7 @@
             closeButton = new Button();
             refreshAllButton = new Button();
             statusLabel = new Label();
+            userFullNameLabel = new Label();
             tabControl1.SuspendLayout();
             productsTab.SuspendLayout();
             panel2.SuspendLayout();
@@ -98,7 +100,7 @@
             tabControl1.Controls.Add(productsTab);
             tabControl1.Controls.Add(ordersTab);
             tabControl1.Controls.Add(createOrderTab);
-            tabControl1.Location = new Point(12, 3);
+            tabControl1.Location = new Point(8, 37);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(1301, 580);
@@ -691,7 +693,7 @@
             // 
             closeButton.BackColor = Color.FromArgb(255, 128, 128);
             closeButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            closeButton.Location = new Point(16, 589);
+            closeButton.Location = new Point(12, 623);
             closeButton.Name = "closeButton";
             closeButton.Size = new Size(75, 48);
             closeButton.TabIndex = 0;
@@ -703,7 +705,7 @@
             // 
             refreshAllButton.BackColor = SystemColors.ButtonHighlight;
             refreshAllButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            refreshAllButton.Location = new Point(106, 589);
+            refreshAllButton.Location = new Point(102, 623);
             refreshAllButton.Name = "refreshAllButton";
             refreshAllButton.Size = new Size(139, 48);
             refreshAllButton.TabIndex = 1;
@@ -714,24 +716,36 @@
             // statusLabel
             // 
             statusLabel.AutoSize = true;
-            statusLabel.Location = new Point(270, 606);
+            statusLabel.Location = new Point(266, 640);
             statusLabel.Name = "statusLabel";
             statusLabel.Size = new Size(66, 15);
             statusLabel.TabIndex = 2;
             statusLabel.Text = "statusLabel";
             statusLabel.Click += statusLabel_Click;
             // 
+            // userFullNameLabel
+            // 
+            userFullNameLabel.AutoSize = true;
+            userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            userFullNameLabel.Location = new Point(1062, 19);
+            userFullNameLabel.Name = "userFullNameLabel";
+            userFullNameLabel.Size = new Size(112, 15);
+            userFullNameLabel.TabIndex = 5;
+            userFullNameLabel.Text = "userFullNameLabel";
+            // 
             // ManagementForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1325, 640);
+            ClientSize = new Size(1325, 687);
+            Controls.Add(userFullNameLabel);
             Controls.Add(statusLabel);
             Controls.Add(refreshAllButton);
             Controls.Add(closeButton);
             Controls.Add(tabControl1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ManagementForm";
-            Text = "ManagementForm";
+            Text = "Магазин Обуви";
             tabControl1.ResumeLayout(false);
             productsTab.ResumeLayout(false);
             productsTab.PerformLayout();
@@ -806,5 +820,6 @@
         private Button createOrderButton;
         private Label label17;
         private ComboBox createOrderProductComboBox;
+        private Label userFullNameLabel;
     }
 }

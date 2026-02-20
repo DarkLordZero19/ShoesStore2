@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutorizationForm));
             registrationButton = new Button();
             loginButton = new Button();
             usernameTextBox = new TextBox();
@@ -130,8 +131,9 @@
             Controls.Add(usernameTextBox);
             Controls.Add(loginButton);
             Controls.Add(registrationButton);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "AutorizationForm";
-            Text = "AutorizationForm";
+            Text = "Авторизация";
             ResumeLayout(false);
             PerformLayout();
         }
