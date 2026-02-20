@@ -12,6 +12,6 @@ namespace ShoesStore.Module
         public int OrderId { get; set; }
         public int ProductId { get; set; }
         public int Quantity { get; set; }
-        public decimal Price { get; set; } // Цена на момент заказа
+        public decimal Price { get; set; }
     }
 }

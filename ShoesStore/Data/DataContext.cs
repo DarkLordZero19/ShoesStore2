@@ -11,7 +11,12 @@ namespace ShoesStore.Data
 {
     public class DataContext
     {
-        private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\777\\Source\\Repos\\ShoesStore2\\ShoesStore\\Database\\ShoesStoreDB.mdf;Integrated Security=True";
+        public List<Product> Products { get; set; }
+        public List<User> Users { get; set; }
+        public List<Order> Orders { get; set; }
+        public List<OrderItem> OrderItems { get; set; }
+
+        private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Взрослая академия\\Source\\Repos\\ShoesStore2\\ShoesStore\\Database\\ShoesStoreDB.mdf;Integrated Security=True";
 
         public User GetUser(string login, string password)
         {

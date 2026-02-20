@@ -42,7 +42,6 @@ namespace ShoesStore.Forms
 
         private void guestButton_Click(object sender, EventArgs e)
         {
-            //Создаём гостя который не хранится в БД
             User guestUser = new User
             {
                 Id = -1,

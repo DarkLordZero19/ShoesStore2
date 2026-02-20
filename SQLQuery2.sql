@@ -1,4 +1,4 @@
-﻿-- Добавление пользователей (пароли: admin123, manager123, client123)
+﻿-- Добавление пользователей
 INSERT INTO Users (Login, Password, Role) VALUES
 ('admin', 'admin123', 'Admin'),
 ('manager', 'manager123', 'Manager'),
