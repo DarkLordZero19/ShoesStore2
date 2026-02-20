@@ -274,7 +274,7 @@ namespace ShoesStore.Data
                 SqlTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    // Вставка заказа
+                    //Вставка заказа
                     string orderQuery = "INSERT INTO Orders (UserId, OrderDate, Status) VALUES (@UserId, @OrderDate, @Status); SELECT SCOPE_IDENTITY();";
                     SqlCommand orderCmd = new SqlCommand(orderQuery, connection, transaction);
                     orderCmd.Parameters.AddWithValue("@UserId", order.UserId);
@@ -282,7 +282,7 @@ namespace ShoesStore.Data
                     orderCmd.Parameters.AddWithValue("@Status", order.Status);
                     int orderId = Convert.ToInt32(orderCmd.ExecuteScalar());
 
-                    // Вставка позиций
+                    //Вставка позиций
                     foreach (var item in items)
                     {
                         string itemQuery = "INSERT INTO OrderItems (OrderId, ProductId, Quantity, Price) VALUES (@OrderId, @ProductId, @Quantity, @Price)";
