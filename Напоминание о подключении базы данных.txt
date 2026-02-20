@@ -3,3 +3,6 @@ private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLL
 
 Дома:
 private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\777\\Source\\Repos\\ShoesStore2\\ShoesStore\\Database\\ShoesStoreDB.mdf;Integrated Security=True";
+
+Общее подключение:
+static string connectionString = "Server=(localdb)\\mssqllocaldb;Database=master;Trusted_Connection=True;";

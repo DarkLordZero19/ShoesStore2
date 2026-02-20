@@ -16,8 +16,7 @@ namespace ShoesStore.Data
         public List<Order> Orders { get; set; }
         public List<OrderItem> OrderItems { get; set; }
 
-        private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Взрослая академия\\Source\\Repos\\ShoesStore2\\ShoesStore\\Database\\ShoesStoreDB.mdf;Integrated Security=True";
-
+        static string connectionString = "Server=(localdb)\\mssqllocaldb;Database=master;Trusted_Connection=True;";
         public User GetUser(string login, string password)
         {
             User user = null;
