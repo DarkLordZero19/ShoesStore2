@@ -20,8 +20,17 @@ namespace ShoesStore.Forms
         private User currentUser;
         public MainForm()
         {
-            InitializeComponent();
-            context = new DataContext();
+            try
+            {
+                InitializeComponent();
+                context = new DataContext();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка инициализации приложения: {ex.Message}\nПриложение будет закрыто.",
+                    "Критическая ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
         }
         public MainForm(User user) : this()
         {
@@ -36,39 +45,55 @@ namespace ShoesStore.Forms
             ConfigureUIBasedOnRole();
         }
 
+        // Настройка видимости панелей в зависимости от роли пользователя
         private void ConfigureUIBasedOnRole()
         {
-            clientPanel.Visible = false;
-            managerPanel.Visible = false;
-            adminPanel.Visible = false;
-
-            if (currentUser == null) return;
-
-            switch (currentUser.Role)
+            try
             {
-                case "Client":
-                    clientPanel.Visible = true;
-                    break;
-                case "Manager":
-                    clientPanel.Visible = true;
-                    managerPanel.Visible = true;
-                    break;
-                case "Admin":
-                    adminPanel.Visible = true;
-                    managerPanel.Visible = true;
-                    clientPanel.Visible = true;
-                    break;
-                case "Guest":
-                    clientPanel.Visible = true;
-                    break;
+                clientPanel.Visible = false;
+                managerPanel.Visible = false;
+                adminPanel.Visible = false;
+
+                if (currentUser == null) return;
+
+                switch (currentUser.Role)
+                {
+                    case "Client":
+                        clientPanel.Visible = true;
+                        break;
+                    case "Manager":
+                        clientPanel.Visible = true;
+                        managerPanel.Visible = true;
+                        break;
+                    case "Admin":
+                        adminPanel.Visible = true;
+                        managerPanel.Visible = true;
+                        clientPanel.Visible = true;
+                        break;
+                    case "Guest":
+                        clientPanel.Visible = true;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка настройки интерфейса: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        // Открытие формы управления с указанием нужной вкладки
         private void OpenManagementForm(string initialTab)
         {
-            ManagementForm mgmtForm = new ManagementForm(currentUser, initialTab);
-            mgmtForm.ShowDialog();
+            try
+            {
+                ManagementForm mgmtForm = new ManagementForm(currentUser, initialTab);
+                // Модальное окно
+                mgmtForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии формы управления: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-
 
         private void buyProductButton_Click(object sender, EventArgs e)
         {
@@ -87,7 +112,7 @@ namespace ShoesStore.Forms
 
         private void exportButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Экспорт будет доступен позже.");
+            MessageBox.Show("Экспорт будет доступен позже.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void adminControlProductButton_Click(object sender, EventArgs e)

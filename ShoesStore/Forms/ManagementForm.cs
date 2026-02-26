@@ -17,76 +17,134 @@ namespace ShoesStore.Forms
     {
         private DataContext context;
         private User currentUser;
+        // Привязка данных через BindingList для автоматического обновления интерфейса
         private BindingList<Product> currentProducts;
-        //DataGridView.DataSource = currentProducts;
         private BindingList<Order> currentOrders;
         private BindingList<OrderItem> currentOrderItems;
 
         public ManagementForm()
         {
-            InitializeComponent();
-            context = new DataContext();
-            currentProducts = new BindingList<Product>();
-            currentOrders = new BindingList<Order>();
-            currentOrderItems = new BindingList<OrderItem>();
+            try
+            {
+                InitializeComponent();
+                context = new DataContext();
+                currentProducts = new BindingList<Product>();
+                currentOrders = new BindingList<Order>();
+                currentOrderItems = new BindingList<OrderItem>();
+
+                // Заполнение списка сортировки
+                productSortComboBox.Items.AddRange(new string[]{
+                    "Без сортировки",
+                    "Цена (по возрастанию)",
+                    "Цена (по убыванию)",
+                    "Название (А-Я)",
+                    "Название (Я-А)",
+                    "Количество (по возрастанию)",
+                    "Количество (по убыванию)"
+                });
+                productSortComboBox.SelectedIndex = 0;
+
+                // Форматирования картинки
+                productsDataGridView.CellFormatting += productsDataGridView_CellFormatting;
+                productsDataGridView.RowPrePaint += productsDataGridView_RowPrePaint;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при инициализации формы: {ex.Message}", "Критическая ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
         }
 
         public ManagementForm(User user, string initialTab) : this()
         {
-            currentUser = user;
-            if (user != null)
+            try
             {
-                if (!string.IsNullOrEmpty(user.FullName))
-                    userFullNameLabel.Text = user.FullName;
-                else
-                    userFullNameLabel.Text = user.Login;
+                currentUser = user;
+                if (user != null)
+                {
+                    if (!string.IsNullOrEmpty(user.FullName))
+                        userFullNameLabel.Text = user.FullName;
+                    else
+                        userFullNameLabel.Text = user.Login;
+                }
+                ConfigureTabsBasedOnRole();
+                SelectTab(initialTab);
             }
-            ConfigureTabsBasedOnRole();
-            SelectTab(initialTab);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при настройке формы: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
         }
 
         private void ConfigureTabsBasedOnRole()
         {
-            if (currentUser == null) return;
-
-            switch (currentUser.Role)
+            try
             {
-                case "Client":
-                    ordersTab.Parent = null;
-                    break;
-                case "Manager":
-                    createOrderTab.Parent = null;
-                    break;
-                case "Admin":
-                    break;
-                case "Guest":
-                    ordersTab.Parent = null;
-                    createOrderTab.Parent = null;
-                    break;
+                if (currentUser == null) return;
+                // По умолчанию скрываем кнопки управления товарами
+                addProductButton.Visible = false;
+                editProductButton.Visible = false;
+                deleteProductButton.Visible = false;
+
+                switch (currentUser.Role)
+                {
+                    case "Client":
+                        ordersTab.Parent = null;
+                        break;
+                    case "Manager":
+                        createOrderTab.Parent = null;
+                        break;
+                    case "Admin":
+                        addProductButton.Visible = true;
+                        editProductButton.Visible = true;
+                        deleteProductButton.Visible = true;
+                        break;
+                    case "Guest":
+                        ordersTab.Parent = null;
+                        createOrderTab.Parent = null;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при настройке ролей: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void SelectTab(string tabName)
         {
-            switch (tabName)
+            try
             {
-                case "Products":
-                    tabControl1.SelectedTab = productsTab;
-                    LoadProducts();
-                    break;
-                case "Orders":
-                    tabControl1.SelectedTab = ordersTab;
-                    LoadOrders();
-                    break;
-                case "Purchase":
-                    tabControl1.SelectedTab = createOrderTab;
-                    LoadProductsForPurchase();
-                    break;
+                switch (tabName)
+                {
+                    case "Products":
+                        tabControl1.SelectedTab = productsTab;
+                        LoadProducts();
+                        break;
+                    case "Orders":
+                        tabControl1.SelectedTab = ordersTab;
+                        LoadOrders();
+                        break;
+                    case "Purchase":
+                        tabControl1.SelectedTab = createOrderTab;
+                        LoadProductsForPurchase();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при выборе вкладки: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         #region Вкладка "Управление товарами"
 
+        // Загрузка товаров с учётом фильтров и сортировки
         private void LoadProducts()
         {
             try
@@ -94,19 +152,48 @@ namespace ShoesStore.Forms
                 statusLabel.Text = "Загрузка товаров...";
                 string category = categoryFilterComboBox.SelectedItem?.ToString();
                 if (category == "Все категории") category = null;
+                string supplier = supplierFilterComboBox.SelectedItem?.ToString();
+                if (supplier == "Все поставщики") supplier = null;
                 string search = productSearchTextBox.Text.Trim();
                 string sort = productSortComboBox.SelectedItem?.ToString();
+                string sortParam = null;
+                switch (sort)
+                {
+                    case "Цена (по возрастанию)": sortParam = "PriceASC"; break;
+                    case "Цена (по убыванию)": sortParam = "PriceDESC"; break;
+                    case "Название (А-Я)": sortParam = "NameASC"; break;
+                    case "Название (Я-А)": sortParam = "NameDESC"; break;
+                    case "Количество (по возрастанию)": sortParam = "QuantityASC"; break;
+                    case "Количество (по убыванию)": sortParam = "QuantityDESC"; break;
+                    default: sortParam = ""; break;
+                }
 
-                List<Product> products = context.GetProducts(category, search, sort);
+                List<Product> products = context.GetProducts(category, supplier, search, sortParam);
+
+                // Получение данных
                 currentProducts = new BindingList<Product>(products);
-
                 productsDataGridView.DataSource = null;
                 productsDataGridView.DataSource = currentProducts;
 
+                // Скрываем технические столбцы
                 productsDataGridView.Columns["Id"].Visible = false;
+                productsDataGridView.Columns["ImagePath"].Visible = false;
+
+                // Добавляем столбец для изображения, если его ещё нет
+                if (!productsDataGridView.Columns.Contains("ImageColumn"))
+                {
+                    DataGridViewImageColumn imageCol = new DataGridViewImageColumn();
+                    imageCol.Name = "ImageColumn";
+                    imageCol.HeaderText = "Фото";
+                    imageCol.ImageLayout = DataGridViewImageCellLayout.Zoom;
+                    imageCol.Width = 80;
+                    // Настройка
+                    productsDataGridView.Columns.Insert(0, imageCol);
+                }
 
                 productsStatsLabel.Text = $"Всего товаров: {currentProducts.Count}";
                 statusLabel.Text = "Готово";
+
             }
             catch (Exception ex)
             {
@@ -165,7 +252,125 @@ namespace ShoesStore.Forms
                         productDescriptionLabel.Text = selected.Description;
                     else
                         productDescriptionLabel.Text = "—";
+
+                    if (selected.Manufacturer != null)
+                        productManufacturerLabel.Text = selected.Manufacturer;
+                    else
+                        productManufacturerLabel.Text = "—";
+
+                    if (selected.Supplier != null)
+                        productSupplierLabel.Text = selected.Supplier;
+                    else
+                        productSupplierLabel.Text = "—";
+
+                    if (selected.Unit != null)
+                        productUnitLabel.Text = selected.Unit;
+                    else
+                        productUnitLabel.Text = "—";
+
+                    productDiscountLabel.Text = selected.Discount.ToString("F2") + "%";
+                    productDiscountedPriceLabel.Text = selected.DiscountedPrice.ToString("C2");
                 }
+            }
+            else
+            {
+                ClearProductDetails();
+            }
+        }
+
+        // Вспомогательный метод для очистки всех полей
+        private void ClearProductDetails()
+        {
+            productNameLabel.Text = "—";
+            productCategoryLabel.Text = "—";
+            productPriceLabel.Text = "—";
+            productStockLabel.Text = "—";
+            productDescriptionLabel.Text = "—";
+            productManufacturerLabel.Text = "—";
+            productSupplierLabel.Text = "—";
+            productUnitLabel.Text = "—";
+            productDiscountLabel.Text = "—";
+            productDiscountedPriceLabel.Text = "—";
+        }
+
+        // Подсветка строк в зависимости от остатка и скидки
+        private void productsDataGridView_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= productsDataGridView.Rows.Count) return;
+
+            DataGridViewRow row = productsDataGridView.Rows[e.RowIndex];
+            Product product = row.DataBoundItem as Product;
+            if (product == null) return;
+
+            // Цвет фона строки
+            if (product.Quantity == 0)
+            {
+                row.DefaultCellStyle.BackColor = Color.LightBlue; // Нет на складе
+            }
+            else if (product.Discount > 15)
+            {
+                row.DefaultCellStyle.BackColor = Color.FromArgb(0x2E, 0x8B, 0x57); // #2E8B57, Скидка >15%
+            }
+            else
+            {
+                row.DefaultCellStyle.BackColor = productsDataGridView.DefaultCellStyle.BackColor;
+            }
+        }
+        // Отображение изображения в отдельном столбце
+        private void productsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            DataGridViewRow row = productsDataGridView.Rows[e.RowIndex];
+            Product product = row.DataBoundItem as Product;
+            if (product == null) return;
+
+            if (productsDataGridView.Columns[e.ColumnIndex].Name == "ImageColumn")
+            {
+                // Загружаем изображение из файла или ставим заглушку
+                if (!string.IsNullOrEmpty(product.ImagePath) && System.IO.File.Exists(product.ImagePath))
+                {
+                    try
+                    {
+                        // Загружаем изображение через поток, чтобы не блокировать файл
+                        using (FileStream fs = new FileStream(product.ImagePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        {
+                            e.Value = Image.FromStream(fs);
+                        }
+                    }
+                    catch
+                    {
+                        e.Value = Properties.Resources.picture; // заглушка
+                    }
+                }
+                else
+                {
+                    e.Value = Properties.Resources.picture;
+                }
+                e.FormattingApplied = true;
+            }
+
+            // Столбец "Цена", перечёркивание цены при наличии скидки
+            if (productsDataGridView.Columns[e.ColumnIndex].Name == "Price" && product.Discount > 0)
+            {
+                e.CellStyle.Font = new Font(e.CellStyle.Font, FontStyle.Strikeout);
+                e.CellStyle.ForeColor = Color.Red;
+            }
+
+            // Столбец "Цена со скидкой", отображаем только если есть скидка
+            if (productsDataGridView.Columns[e.ColumnIndex].Name == "DiscountedPrice")
+            {
+                if (product.Discount > 0)
+                {
+                    e.Value = product.DiscountedPrice.ToString("C2");
+                    e.CellStyle.ForeColor = Color.Black;
+                    e.CellStyle.Font = new Font(e.CellStyle.Font, FontStyle.Regular);
+                }
+                else
+                {
+                    e.Value = "";
+                }
+                e.FormattingApplied = true;
             }
         }
 
@@ -183,14 +388,22 @@ namespace ShoesStore.Forms
             LoadProducts();
         }
 
-        private void categoryFilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void productSearchTextBox_TextChanged(object sender, EventArgs e)
         {
-
+            LoadProducts();
         }
 
+        private void categoryFilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadProducts();
+        }
+        private void supplierFilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadProducts();
+        }
         private void productSortComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            LoadProducts();
         }
 
         private void applyProductFiltersButton_Click(object sender, EventArgs e)
@@ -213,59 +426,115 @@ namespace ShoesStore.Forms
             LoadProducts();
         }
 
+        private void FillSupplierFilter()
+        {
+            try
+            {
+                var suppliers = context.GetAllProducts()
+                                       .Select(p => p.Supplier)
+                                       .Where(s => !string.IsNullOrEmpty(s))
+                                       .Distinct()
+                                       .OrderBy(s => s)
+                                       .ToList();
+                supplierFilterComboBox.Items.Clear();
+                supplierFilterComboBox.Items.Add("Все поставщики");
+                foreach (var sup in suppliers)
+                {
+                    supplierFilterComboBox.Items.Add(sup);
+                }
+                supplierFilterComboBox.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки поставщиков: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void addProductButton_Click(object sender, EventArgs e)
         {
-            ProductEditForm editForm = new ProductEditForm(null);
-            if (editForm.ShowDialog() == DialogResult.OK)
+            try
             {
-                LoadProducts();
-                FillCategoryFilter();
+                ProductEditForm editForm = new ProductEditForm(null);
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    LoadProducts();
+                    FillCategoryFilter();
+                    FillSupplierFilter();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при добавлении товара: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void editProductButton_Click(object sender, EventArgs e)
         {
-            if (productsDataGridView.SelectedRows.Count == 0)
+            try
             {
-                MessageBox.Show("Выберите товар для редактирования.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            Product selected = productsDataGridView.SelectedRows[0].DataBoundItem as Product;
-            if (selected != null)
-            {
-                ProductEditForm editForm = new ProductEditForm(selected);
-                if (editForm.ShowDialog() == DialogResult.OK)
+                if (productsDataGridView.SelectedRows.Count == 0)
                 {
-                    LoadProducts();
-                    FillCategoryFilter();
+                    MessageBox.Show("Выберите товар для редактирования.", "Информация",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
+
+                Product selected = productsDataGridView.SelectedRows[0].DataBoundItem as Product;
+                if (selected != null)
+                {
+                    ProductEditForm editForm = new ProductEditForm(selected);
+                    if (editForm.ShowDialog() == DialogResult.OK)
+                    {
+                        LoadProducts();
+                        FillCategoryFilter();
+                        FillSupplierFilter();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при редактировании товара: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void deleteProductButton_Click(object sender, EventArgs e)
         {
-            if (productsDataGridView.SelectedRows.Count == 0)
-            {
+            if (productsDataGridView.SelectedRows.Count == 0){
                 MessageBox.Show("Выберите товар.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             Product selected = productsDataGridView.SelectedRows[0].DataBoundItem as Product;
-            if (selected != null)
-            {
+            if (selected != null){
+                if (context.IsProductUsedInOrders(selected.Id)){
+                    MessageBox.Show("Невозможно удалить товар, так как он присутствует в заказах.\nСначала удалите связанные заказы.",
+                        "Ошибка удаления", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 DialogResult result = MessageBox.Show($"Удалить товар \"{selected.Name}\"?", "Подтверждение",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    try
-                    {
+                if (result == DialogResult.Yes){
+                    try{
+                        // Сохраняем путь к изображению перед удалением из БД
+                        string imagePath = selected.ImagePath;
+
                         context.DeleteProduct(selected.Id);
+
+                        // Удаляем файл изображения, если он существует
+                        if (!string.IsNullOrEmpty(imagePath))
+                        {
+                            string fullPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), imagePath);
+                            if (File.Exists(fullPath))
+                                File.Delete(fullPath);
+                        }
+
                         LoadProducts();
                         FillCategoryFilter();
                         statusLabel.Text = "Товар удалён";
                     }
-                    catch (Exception ex)
-                    {
+                    catch (Exception ex){
                         MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -300,6 +569,18 @@ namespace ShoesStore.Forms
         #endregion
 
         #region Вкладка "Управление заказами"
+
+        // Вспомогательный метод для очистки деталей заказа
+        private void ClearOrderDetails()
+        {
+            orderIdLabel.Text = "—";
+            orderDateLabel.Text = "—";
+            orderCustomerLabel.Text = "—";
+            orderProductLabel.Text = "—";
+            orderQuantityLabel.Text = "—";
+            orderTotalLabelDetails.Text = "—";
+            orderStatusLabel.Text = "—";
+        }
 
         private void LoadOrders()
         {
@@ -336,9 +617,12 @@ namespace ShoesStore.Forms
                 if (ordersDataGridView.Columns["Id"] != null)
                     ordersDataGridView.Columns["Id"].Visible = false;
 
-
                 ordersStatsLabel.Text = $"Всего заказов: {currentOrders.Count}";
                 statusLabel.Text = "Готово";
+
+                // Если после загрузки нет строк, то очищаем детали
+                if (orders.Count == 0)
+                    ClearOrderDetails();
             }
             catch (Exception ex)
             {
@@ -360,8 +644,17 @@ namespace ShoesStore.Forms
 
         private decimal CalculateOrderTotal(int orderId)
         {
-            var items = context.GetOrderItems(orderId);
-            return items.Sum(i => i.Price * i.Quantity);
+            try
+            {
+                var items = context.GetOrderItems(orderId);
+                return items.Sum(i => i.Price * i.Quantity);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при расчёте суммы заказа: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 0;
+            }
         }
         private void FillStatusFilter()
         {
@@ -415,6 +708,10 @@ namespace ShoesStore.Forms
                     }
                 }
             }
+            else
+            {
+                ClearOrderDetails();
+            }
         }
 
         private void orderSearchTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -455,35 +752,29 @@ namespace ShoesStore.Forms
 
         private void deleteOrderButton_Click(object sender, EventArgs e)
         {
-            if (productsDataGridView.SelectedRows.Count == 0)
+            if (ordersDataGridView.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите товар для удаления.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Выберите заказ для удаления.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            Product selected = productsDataGridView.SelectedRows[0].DataBoundItem as Product;
-            if (selected != null)
+
+            dynamic selected = ordersDataGridView.SelectedRows[0].DataBoundItem;
+            int orderId = selected.Id;
+
+            DialogResult result = MessageBox.Show($"Удалить заказ №{orderId}?", "Подтверждение",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
             {
-                if (context.IsProductUsedInOrders(selected.Id))
+                try
                 {
-                    MessageBox.Show("Невозможно удалить товар, так как он присутствует в заказах.\nСначала удалите связанные заказы или их позиции.",
-                        "Ошибка удаления", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    context.DeleteOrder(orderId);
+                    LoadOrders();
+                    LoadProducts();
+                    statusLabel.Text = "Заказ удалён";
                 }
-                DialogResult result = MessageBox.Show($"Удалить товар \"{selected.Name}\"?", "Подтверждение",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        context.DeleteProduct(selected.Id);
-                        LoadProducts();
-                        FillCategoryFilter();
-                        statusLabel.Text = "Товар удалён";
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -559,7 +850,7 @@ namespace ShoesStore.Forms
         {
             if (createOrderProductComboBox.SelectedItem is Product selected)
             {
-                createOrderProductPriceLabel.Text = selected.Price.ToString("C2");
+                createOrderProductPriceLabel.Text = selected.DiscountedPrice.ToString("C2");
                 createOrderProductStockLabel.Text = selected.Quantity.ToString();
 
                 orderQuantityComboBox.Items.Clear();
@@ -597,7 +888,7 @@ namespace ShoesStore.Forms
                 orderQuantityComboBox.SelectedItem != null)
             {
                 int quantity = (int)orderQuantityComboBox.SelectedItem;
-                decimal total = selected.Price * quantity;
+                decimal total = selected.DiscountedPrice * quantity;
                 createOrderTotalLabel.Text = total.ToString("C2");
             }
         }
@@ -607,6 +898,7 @@ namespace ShoesStore.Forms
 
         }
 
+        // Создание заказа с использованием цены со скидкой
         private void createOrderButton_Click(object sender, EventArgs e)
         {
             if (currentUser == null || currentUser.Role == "Guest")
@@ -646,14 +938,14 @@ namespace ShoesStore.Forms
                 };
 
                 List<OrderItem> items = new List<OrderItem>
-        {
-            new OrderItem
-            {
-                ProductId = selectedProduct.Id,
-                Quantity = quantity,
-                Price = selectedProduct.Price
-            }
-        };
+                {
+                    new OrderItem
+                    {
+                        ProductId = selectedProduct.Id,
+                        Quantity = quantity,
+                        Price = selectedProduct.DiscountedPrice // Сохраняем цену со скидкой
+                    }
+                };
 
                 context.AddOrder(newOrder, items);
 
@@ -713,6 +1005,7 @@ namespace ShoesStore.Forms
         private void productsTab_Enter(object sender, EventArgs e)
         {
             FillCategoryFilter();
+            FillSupplierFilter();
             LoadProducts();
         }
 
@@ -727,5 +1020,6 @@ namespace ShoesStore.Forms
             LoadProductsForPurchase();
         }
         #endregion
+
     }
 }

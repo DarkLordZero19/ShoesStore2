@@ -66,7 +66,7 @@
             // 
             clientPanel.Controls.Add(buyProductButton);
             clientPanel.Controls.Add(label1);
-            clientPanel.Location = new Point(232, 41);
+            clientPanel.Location = new Point(291, 41);
             clientPanel.Name = "clientPanel";
             clientPanel.Size = new Size(185, 149);
             clientPanel.TabIndex = 1;
@@ -98,7 +98,7 @@
             managerPanel.Controls.Add(manageControlOrdersButton);
             managerPanel.Controls.Add(manageControlProductButton);
             managerPanel.Controls.Add(label2);
-            managerPanel.Location = new Point(486, 41);
+            managerPanel.Location = new Point(520, 41);
             managerPanel.Name = "managerPanel";
             managerPanel.Size = new Size(194, 215);
             managerPanel.TabIndex = 2;
@@ -195,7 +195,7 @@
             // 
             userFullNameLabel.AutoSize = true;
             userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            userFullNameLabel.Location = new Point(786, 9);
+            userFullNameLabel.Location = new Point(437, 9);
             userFullNameLabel.Name = "userFullNameLabel";
             userFullNameLabel.Size = new Size(112, 15);
             userFullNameLabel.TabIndex = 4;
@@ -204,10 +204,11 @@
             // companyLogoPictureBox
             // 
             companyLogoPictureBox.ErrorImage = Properties.Resources.error;
-            companyLogoPictureBox.InitialImage = (Image)resources.GetObject("companyLogoPictureBox.InitialImage");
+            companyLogoPictureBox.Image = Properties.Resources.logo;
+            companyLogoPictureBox.InitialImage = Properties.Resources.logo;
             companyLogoPictureBox.Location = new Point(12, 41);
             companyLogoPictureBox.Name = "companyLogoPictureBox";
-            companyLogoPictureBox.Size = new Size(177, 149);
+            companyLogoPictureBox.Size = new Size(254, 238);
             companyLogoPictureBox.TabIndex = 5;
             companyLogoPictureBox.TabStop = false;
             // 

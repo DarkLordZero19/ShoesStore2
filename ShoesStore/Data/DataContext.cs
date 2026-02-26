@@ -16,8 +16,8 @@ namespace ShoesStore.Data
         public List<Order> Orders { get; set; }
         public List<OrderItem> OrderItems { get; set; }
 
-        private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Взрослая академия\\Source\\Repos\\ShoesStore2\\ShoesStore\\Database\\ShoesStoreDB.mdf;Integrated Security=True";
-
+        private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\777\\Source\\Repos\\ShoesStore2\\ShoesStore\\Database\\ShoesStoreDB.mdf;Integrated Security=True";
+        //private static readonly string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Взрослая академия\\Source\\Repos\\ShoesStore2\\ShoesStore\\Database\\ShoesStoreDB.mdf;Integrated Security=True";
         public User GetUser(string login, string password)
         {
             User user = null;
@@ -38,8 +38,11 @@ namespace ShoesStore.Data
                             Login = reader.GetString(1),
                             Password = reader.GetString(2),
                             Role = reader.GetString(3),
-                            FullName = reader.IsDBNull(4) ? null : reader.GetString(4)
                         };
+                        if (reader.IsDBNull(4))
+                            user.FullName = null;
+                        else
+                            user.FullName = reader.GetString(4);
                     }
                 }
             }
@@ -63,7 +66,7 @@ namespace ShoesStore.Data
         public List<Product> GetAllProducts()
         {
             List<Product> products = new List<Product>();
-            string query = "SELECT Id, Name, Description, Price, Quantity, Category FROM Products";
+            string query = "SELECT Id, Name, Description, Price, Quantity, Category, Manufacturer, Supplier, Unit, Discount, ImagePath FROM Products";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand command = new SqlCommand(query, connection);
@@ -75,10 +78,45 @@ namespace ShoesStore.Data
                         Product product = new Product();
                         product.Id = reader.GetInt32(0);
                         product.Name = reader.GetString(1);
-                        product.Description = reader.IsDBNull(2) ? null : reader.GetString(2);
+
+                        if (reader.IsDBNull(2))
+                            product.Description = null;
+                        else
+                            product.Description = reader.GetString(2);
+
                         product.Price = reader.GetDecimal(3);
                         product.Quantity = reader.GetInt32(4);
-                        product.Category = reader.IsDBNull(5) ? null : reader.GetString(5);
+
+                        if (reader.IsDBNull(5))
+                            product.Category = null;
+                        else
+                            product.Category = reader.GetString(5);
+
+                        if (reader.IsDBNull(6))
+                            product.Manufacturer = null;
+                        else
+                            product.Manufacturer = reader.GetString(6);
+
+                        if (reader.IsDBNull(7))
+                            product.Supplier = null;
+                        else
+                            product.Supplier = reader.GetString(7);
+
+                        if (reader.IsDBNull(8))
+                            product.Unit = null;
+                        else
+                            product.Unit = reader.GetString(8);
+
+                        if (reader.IsDBNull(9))
+                            product.Discount = 0;
+                        else
+                            product.Discount = reader.GetDecimal(9);
+
+                        if (reader.IsDBNull(10))
+                            product.ImagePath = null;
+                        else
+                            product.ImagePath = reader.GetString(10);
+
                         products.Add(product);
                     }
                 }
@@ -87,15 +125,17 @@ namespace ShoesStore.Data
         }
 
         //Получить товары с фильтрацией, поиском и сортировкой
-        public List<Product> GetProducts(string categoryFilter, string searchText, string sortBy)
+        public List<Product> GetProducts(string categoryFilter, string supplierFilter, string searchText, string sortBy)
         {
             List<Product> products = new List<Product>();
-            string query = "SELECT Id, Name, Description, Price, Quantity, Category FROM Products WHERE 1=1";
+            string query = "SELECT Id, Name, Description, Price, Quantity, Category, Manufacturer, Supplier, Unit, Discount, ImagePath FROM Products WHERE 1=1";
 
             if (!string.IsNullOrEmpty(categoryFilter))
                 query += " AND Category = @Category";
+            if (!string.IsNullOrEmpty(supplierFilter))
+                query += " AND Supplier = @Supplier";
             if (!string.IsNullOrEmpty(searchText))
-                query += " AND (Name LIKE @Search OR Description LIKE @Search)";
+                query += " AND (Name LIKE @Search OR Description LIKE @Search OR Manufacturer LIKE @Search OR Supplier LIKE @Search)";
 
             //Безопасная сортировка (только разрешённые варианты)
             if (!string.IsNullOrEmpty(sortBy))
@@ -108,6 +148,10 @@ namespace ShoesStore.Data
                     query += " ORDER BY Name ASC";
                 else if (sortBy == "NameDESC")
                     query += " ORDER BY Name DESC";
+                else if (sortBy == "QuantityASC")
+                    query += " ORDER BY Quantity ASC";
+                else if (sortBy == "QuantityDESC")
+                    query += " ORDER BY Quantity DESC";
                 else
                     query += " ORDER BY Id";
             }
@@ -121,6 +165,8 @@ namespace ShoesStore.Data
                 SqlCommand command = new SqlCommand(query, connection);
                 if (!string.IsNullOrEmpty(categoryFilter))
                     command.Parameters.AddWithValue("@Category", categoryFilter);
+                if (!string.IsNullOrEmpty(supplierFilter))
+                    command.Parameters.AddWithValue("@Supplier", supplierFilter);
                 if (!string.IsNullOrEmpty(searchText))
                     command.Parameters.AddWithValue("@Search", "%" + searchText + "%");
 
@@ -132,10 +178,45 @@ namespace ShoesStore.Data
                         Product product = new Product();
                         product.Id = reader.GetInt32(0);
                         product.Name = reader.GetString(1);
-                        product.Description = reader.IsDBNull(2) ? null : reader.GetString(2);
+
+                        if (reader.IsDBNull(2))
+                            product.Description = null;
+                        else
+                            product.Description = reader.GetString(2);
+
                         product.Price = reader.GetDecimal(3);
                         product.Quantity = reader.GetInt32(4);
-                        product.Category = reader.IsDBNull(5) ? null : reader.GetString(5);
+
+                        if (reader.IsDBNull(5))
+                            product.Category = null;
+                        else
+                            product.Category = reader.GetString(5);
+
+                        if (reader.IsDBNull(6))
+                            product.Manufacturer = null;
+                        else
+                            product.Manufacturer = reader.GetString(6);
+
+                        if (reader.IsDBNull(7))
+                            product.Supplier = null;
+                        else
+                            product.Supplier = reader.GetString(7);
+
+                        if (reader.IsDBNull(8))
+                            product.Unit = null;
+                        else
+                            product.Unit = reader.GetString(8);
+
+                        if (reader.IsDBNull(9))
+                            product.Discount = 0;
+                        else
+                            product.Discount = reader.GetDecimal(9);
+
+                        if (reader.IsDBNull(10))
+                            product.ImagePath = null;
+                        else
+                            product.ImagePath = reader.GetString(10);
+
                         products.Add(product);
                     }
                 }
@@ -146,15 +227,47 @@ namespace ShoesStore.Data
         //Добавить новый товар
         public void AddProduct(Product product)
         {
-            string query = "INSERT INTO Products (Name, Description, Price, Quantity, Category) VALUES (@Name, @Description, @Price, @Quantity, @Category)";
+            string query = "INSERT INTO Products (Name, Description, Price, Quantity, Category, Manufacturer, Supplier, Unit, Discount, ImagePath) " +
+                "VALUES (@Name, @Description, @Price, @Quantity, @Category, @Manufacturer, @Supplier, @Unit, @Discount, @ImagePath)";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Name", product.Name);
-                command.Parameters.AddWithValue("@Description", (object)product.Description ?? DBNull.Value);
+                if (product.Description != null)
+                    command.Parameters.AddWithValue("@Description", product.Description);
+                else
+                    command.Parameters.AddWithValue("@Description", DBNull.Value);
+
                 command.Parameters.AddWithValue("@Price", product.Price);
                 command.Parameters.AddWithValue("@Quantity", product.Quantity);
-                command.Parameters.AddWithValue("@Category", (object)product.Category ?? DBNull.Value);
+
+                if (product.Category != null)
+                    command.Parameters.AddWithValue("@Category", product.Category);
+                else
+                    command.Parameters.AddWithValue("@Category", DBNull.Value);
+
+                if (product.Manufacturer != null)
+                    command.Parameters.AddWithValue("@Manufacturer", product.Manufacturer);
+                else
+                    command.Parameters.AddWithValue("@Manufacturer", DBNull.Value);
+
+                if (product.Supplier != null)
+                    command.Parameters.AddWithValue("@Supplier", product.Supplier);
+                else
+                    command.Parameters.AddWithValue("@Supplier", DBNull.Value);
+
+                if (product.Unit != null)
+                    command.Parameters.AddWithValue("@Unit", product.Unit);
+                else
+                    command.Parameters.AddWithValue("@Unit", DBNull.Value);
+
+                command.Parameters.AddWithValue("@Discount", product.Discount);
+
+                if (product.ImagePath != null)
+                    command.Parameters.AddWithValue("@ImagePath", product.ImagePath);
+                else
+                    command.Parameters.AddWithValue("@ImagePath", DBNull.Value);
+
                 connection.Open();
                 command.ExecuteNonQuery();
             }
@@ -169,10 +282,42 @@ namespace ShoesStore.Data
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Id", product.Id);
                 command.Parameters.AddWithValue("@Name", product.Name);
-                command.Parameters.AddWithValue("@Description", (object)product.Description ?? DBNull.Value);
+
+                if (product.Description != null)
+                    command.Parameters.AddWithValue("@Description", product.Description);
+                else
+                    command.Parameters.AddWithValue("@Description", DBNull.Value);
+
                 command.Parameters.AddWithValue("@Price", product.Price);
                 command.Parameters.AddWithValue("@Quantity", product.Quantity);
-                command.Parameters.AddWithValue("@Category", (object)product.Category ?? DBNull.Value);
+
+                if (product.Category != null)
+                    command.Parameters.AddWithValue("@Category", product.Category);
+                else
+                    command.Parameters.AddWithValue("@Category", DBNull.Value);
+
+                if (product.Manufacturer != null)
+                    command.Parameters.AddWithValue("@Manufacturer", product.Manufacturer);
+                else
+                    command.Parameters.AddWithValue("@Manufacturer", DBNull.Value);
+
+                if (product.Supplier != null)
+                    command.Parameters.AddWithValue("@Supplier", product.Supplier);
+                else
+                    command.Parameters.AddWithValue("@Supplier", DBNull.Value);
+
+                if (product.Unit != null)
+                    command.Parameters.AddWithValue("@Unit", product.Unit);
+                else
+                    command.Parameters.AddWithValue("@Unit", DBNull.Value);
+
+                command.Parameters.AddWithValue("@Discount", product.Discount);
+
+                if (product.ImagePath != null)
+                    command.Parameters.AddWithValue("@ImagePath", product.ImagePath);
+                else
+                    command.Parameters.AddWithValue("@ImagePath", DBNull.Value);
+
                 connection.Open();
                 command.ExecuteNonQuery();
             }
@@ -283,9 +428,10 @@ namespace ShoesStore.Data
                     orderCmd.Parameters.AddWithValue("@Status", order.Status);
                     int orderId = Convert.ToInt32(orderCmd.ExecuteScalar());
 
-                    //Вставка позиций
+                    // Вставка позиций и обновление остатков
                     foreach (var item in items)
                     {
+                        //Вставка позиций
                         string itemQuery = "INSERT INTO OrderItems (OrderId, ProductId, Quantity, Price) VALUES (@OrderId, @ProductId, @Quantity, @Price)";
                         SqlCommand itemCmd = new SqlCommand(itemQuery, connection, transaction);
                         itemCmd.Parameters.AddWithValue("@OrderId", orderId);
@@ -293,8 +439,14 @@ namespace ShoesStore.Data
                         itemCmd.Parameters.AddWithValue("@Quantity", item.Quantity);
                         itemCmd.Parameters.AddWithValue("@Price", item.Price);
                         itemCmd.ExecuteNonQuery();
-                    }
 
+                        // Уменьшение остатка товара
+                        string updateProductQuery = "UPDATE Products SET Quantity = Quantity - @Quantity WHERE Id = @ProductId";
+                        SqlCommand updateCmd = new SqlCommand(updateProductQuery, connection, transaction);
+                        updateCmd.Parameters.AddWithValue("@Quantity", item.Quantity);
+                        updateCmd.Parameters.AddWithValue("@ProductId", item.ProductId);
+                        updateCmd.ExecuteNonQuery();
+                    }
                     transaction.Commit();
                 }
                 catch
@@ -322,13 +474,47 @@ namespace ShoesStore.Data
         //Удалить заказ
         public void DeleteOrder(int orderId)
         {
-            string query = "DELETE FROM Orders WHERE Id = @Id";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Id", orderId);
                 connection.Open();
-                command.ExecuteNonQuery();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    // Сначала получим все позиции заказа, чтобы восстановить остатки
+                    string selectItemsQuery = "SELECT ProductId, Quantity FROM OrderItems WHERE OrderId = @OrderId";
+                    SqlCommand selectCmd = new SqlCommand(selectItemsQuery, connection, transaction);
+                    selectCmd.Parameters.AddWithValue("@OrderId", orderId);
+                    List<(int productId, int quantity)> items = new List<(int, int)>();
+                    using (SqlDataReader reader = selectCmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            items.Add((reader.GetInt32(0), reader.GetInt32(1)));
+                        }
+                    }
+
+                    // Восстанавливаем остатки товаров
+                    foreach (var item in items)
+                    {
+                        string updateProductQuery = "UPDATE Products SET Quantity = Quantity + @Quantity WHERE Id = @ProductId";
+                        SqlCommand updateCmd = new SqlCommand(updateProductQuery, connection, transaction);
+                        updateCmd.Parameters.AddWithValue("@Quantity", item.quantity);
+                        updateCmd.Parameters.AddWithValue("@ProductId", item.productId);
+                        updateCmd.ExecuteNonQuery();
+                    }
+
+                    // Удаляем заказ (позиции удалятся каскадно)
+                    string deleteOrderQuery = "DELETE FROM Orders WHERE Id = @Id";
+                    SqlCommand deleteCmd = new SqlCommand(deleteOrderQuery, connection, transaction);
+                    deleteCmd.Parameters.AddWithValue("@Id", orderId);
+                    deleteCmd.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 

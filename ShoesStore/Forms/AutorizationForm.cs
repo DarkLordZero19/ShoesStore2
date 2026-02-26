@@ -18,8 +18,17 @@ namespace ShoesStore.Forms
         private DataContext context;
         public AutorizationForm()
         {
-            InitializeComponent();
-            context = new DataContext();
+            try
+            {
+                InitializeComponent();
+                context = new DataContext();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка инициализации приложения: {ex.Message}\nПриложение будет закрыто.",
+                    "Критическая ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
         }
 
         private void usernameTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -42,14 +51,23 @@ namespace ShoesStore.Forms
 
         private void guestButton_Click(object sender, EventArgs e)
         {
-            User guestUser = new User
+            try
             {
-                Id = -1,
-                Login = "guest",
-                Password = "",
-                Role = "Guest"
-            };
-            OpenMainForm(guestUser);
+                // Создание гостевого пользователя, Id = -1 означает отсутствие в БД
+                User guestUser = new User
+                {
+                    Id = -1,
+                    Login = "guest",
+                    Password = "",
+                    Role = "Guest"
+                };
+                OpenMainForm(guestUser);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при входе как гость: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void registrationButton_Click(object sender, EventArgs e)
@@ -89,23 +107,42 @@ namespace ShoesStore.Forms
                 return;
             }
 
-            User user = context.GetUser(login, password);
-            if (user != null)
+            try
             {
-                OpenMainForm(user);
+                User user = context.GetUser(login, password);
+                if (user != null)
+                {
+                    OpenMainForm(user);
+                }
+                else
+                {
+                    MessageBox.Show("Неверный логин или пароль.", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Неверный логин или пароль.", "Ошибка",
+                MessageBox.Show($"Ошибка при входе: {ex.Message}", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        // После успешной авторизации скрываем форму входа и показываем главную
         private void OpenMainForm(User user)
         {
-            MainForm mainForm = new MainForm(user);
-            mainForm.FormClosed += (s, args) => this.Show();
-            this.Hide();
-            mainForm.Show();
+            try
+            {
+                MainForm mainForm = new MainForm(user);
+                // При закрытии главной формы снова показываем окно входа
+                mainForm.FormClosed += (s, args) => this.Show();
+                this.Hide();
+                mainForm.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии главного окна: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Show();
+            }
         }
     }
 }

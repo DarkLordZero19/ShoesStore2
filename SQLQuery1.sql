@@ -14,7 +14,12 @@ CREATE TABLE Products (
     Description NVARCHAR(500) NULL,
     Price DECIMAL(10,2) NOT NULL,
     Quantity INT NOT NULL DEFAULT 0,
-    Category NVARCHAR(50) NULL
+    Category NVARCHAR(50) NULL,
+    Manufacturer NVARCHAR(100) NULL,
+    Supplier NVARCHAR(100) NULL,
+    Unit NVARCHAR(20) NULL,
+    Discount DECIMAL(5,2) NULL DEFAULT 0,
+    ImagePath NVARCHAR(255) NULL
 );
 
 -- Таблица Orders
