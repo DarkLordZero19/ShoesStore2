@@ -89,6 +89,11 @@ namespace ShoesStore.Forms
                 editProductButton.Visible = false;
                 deleteProductButton.Visible = false;
 
+                // По умолчанию скрываем кнопки управления заказами
+                addOrderButton.Visible = false;
+                editOrderButton.Visible = false;
+                deleteOrderButton.Visible = false;
+
                 switch (currentUser.Role)
                 {
                     case "Client":
@@ -96,11 +101,17 @@ namespace ShoesStore.Forms
                         break;
                     case "Manager":
                         createOrderTab.Parent = null;
+                        addOrderButton.Visible = false;
+                        editOrderButton.Visible = false;
+                        deleteOrderButton.Visible = false;
                         break;
                     case "Admin":
                         addProductButton.Visible = true;
                         editProductButton.Visible = true;
                         deleteProductButton.Visible = true;
+                        addOrderButton.Visible = true;
+                        editOrderButton.Visible = true;
+                        deleteOrderButton.Visible = true;
                         break;
                     case "Guest":
                         ordersTab.Parent = null;
@@ -232,48 +243,56 @@ namespace ShoesStore.Forms
 
         private void productsDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            if (productsDataGridView.SelectedRows.Count > 0)
+            try
             {
-                DataGridViewRow row = productsDataGridView.SelectedRows[0];
-                Product selected = row.DataBoundItem as Product;
-                if (selected != null)
+                if (productsDataGridView.SelectedRows.Count > 0)
                 {
-                    productNameLabel.Text = selected.Name;
+                    DataGridViewRow row = productsDataGridView.SelectedRows[0];
+                    Product selected = row.DataBoundItem as Product;
+                    if (selected != null)
+                    {
+                        productNameLabel.Text = selected.Name;
 
-                    if (selected.Category != null)
-                        productCategoryLabel.Text = selected.Category;
-                    else
-                        productCategoryLabel.Text = "—";
+                        if (selected.Category != null)
+                            productCategoryLabel.Text = selected.Category;
+                        else
+                            productCategoryLabel.Text = "—";
 
-                    productPriceLabel.Text = selected.Price.ToString("C2");
-                    productStockLabel.Text = selected.Quantity.ToString();
+                        productPriceLabel.Text = selected.Price.ToString("C2");
+                        productStockLabel.Text = selected.Quantity.ToString();
 
-                    if (selected.Description != null)
-                        productDescriptionLabel.Text = selected.Description;
-                    else
-                        productDescriptionLabel.Text = "—";
+                        if (selected.Description != null)
+                            productDescriptionLabel.Text = selected.Description;
+                        else
+                            productDescriptionLabel.Text = "—";
 
-                    if (selected.Manufacturer != null)
-                        productManufacturerLabel.Text = selected.Manufacturer;
-                    else
-                        productManufacturerLabel.Text = "—";
+                        if (selected.Manufacturer != null)
+                            productManufacturerLabel.Text = selected.Manufacturer;
+                        else
+                            productManufacturerLabel.Text = "—";
 
-                    if (selected.Supplier != null)
-                        productSupplierLabel.Text = selected.Supplier;
-                    else
-                        productSupplierLabel.Text = "—";
+                        if (selected.Supplier != null)
+                            productSupplierLabel.Text = selected.Supplier;
+                        else
+                            productSupplierLabel.Text = "—";
 
-                    if (selected.Unit != null)
-                        productUnitLabel.Text = selected.Unit;
-                    else
-                        productUnitLabel.Text = "—";
+                        if (selected.Unit != null)
+                            productUnitLabel.Text = selected.Unit;
+                        else
+                            productUnitLabel.Text = "—";
 
-                    productDiscountLabel.Text = selected.Discount.ToString("F2") + "%";
-                    productDiscountedPriceLabel.Text = selected.DiscountedPrice.ToString("C2");
+                        productDiscountLabel.Text = selected.Discount.ToString("F2") + "%";
+                        productDiscountedPriceLabel.Text = selected.DiscountedPrice.ToString("C2");
+                    }
+                }
+                else
+                {
+                    ClearProductDetails();
                 }
             }
-            else
+            catch (Exception ex)
             {
+                MessageBox.Show($"Ошибка при загрузке деталей товара: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ClearProductDetails();
             }
         }
@@ -501,13 +520,16 @@ namespace ShoesStore.Forms
 
         private void deleteProductButton_Click(object sender, EventArgs e)
         {
-            if (productsDataGridView.SelectedRows.Count == 0){
+            if (productsDataGridView.SelectedRows.Count == 0)
+            {
                 MessageBox.Show("Выберите товар.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             Product selected = productsDataGridView.SelectedRows[0].DataBoundItem as Product;
-            if (selected != null){
-                if (context.IsProductUsedInOrders(selected.Id)){
+            if (selected != null)
+            {
+                if (context.IsProductUsedInOrders(selected.Id))
+                {
                     MessageBox.Show("Невозможно удалить товар, так как он присутствует в заказах.\nСначала удалите связанные заказы.",
                         "Ошибка удаления", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -515,8 +537,10 @@ namespace ShoesStore.Forms
 
                 DialogResult result = MessageBox.Show($"Удалить товар \"{selected.Name}\"?", "Подтверждение",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes){
-                    try{
+                if (result == DialogResult.Yes)
+                {
+                    try
+                    {
                         // Сохраняем путь к изображению перед удалением из БД
                         string imagePath = selected.ImagePath;
 
@@ -534,7 +558,8 @@ namespace ShoesStore.Forms
                         FillCategoryFilter();
                         statusLabel.Text = "Товар удалён";
                     }
-                    catch (Exception ex){
+                    catch (Exception ex)
+                    {
                         MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -580,6 +605,8 @@ namespace ShoesStore.Forms
             orderQuantityLabel.Text = "—";
             orderTotalLabelDetails.Text = "—";
             orderStatusLabel.Text = "—";
+            orderAddressLabel.Text = "—";
+            orderIssueDateLabel.Text = "—";
         }
 
         private void LoadOrders()
@@ -609,6 +636,8 @@ namespace ShoesStore.Forms
                     Дата = o.OrderDate.ToString("dd.MM.yyyy HH:mm"),
                     Клиент = GetUserLogin(o.UserId),
                     Статус = o.Status,
+                    Адрес = o.DeliveryAddress,
+                    Дата_Выдачи = o.IssueDate?.ToString("dd.MM.yyyy"),
                     Сумма = CalculateOrderTotal(o.Id).ToString("C2")
                 }).ToList();
 
@@ -674,42 +703,59 @@ namespace ShoesStore.Forms
 
         private void ordersDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            if (ordersDataGridView.SelectedRows.Count > 0)
+            try
             {
-                dynamic selected = ordersDataGridView.SelectedRows[0].DataBoundItem;
-                int orderId = selected.Id;
-                Order order = currentOrders.FirstOrDefault(o => o.Id == orderId);
-                if (order != null)
+                if (ordersDataGridView.SelectedRows.Count > 0)
                 {
-                    orderIdLabel.Text = order.Id.ToString();
-                    orderDateLabel.Text = order.OrderDate.ToString("dd.MM.yyyy HH:mm");
-                    orderCustomerLabel.Text = GetUserLogin(order.UserId);
-                    orderStatusLabel.Text = order.Status;
-
-                    List<OrderItem> items = context.GetOrderItems(orderId);
-                    currentOrderItems = new BindingList<OrderItem>(items);
-
-                    orderTotalLabelDetails.Text = currentOrderItems.Sum(i => i.Price * i.Quantity).ToString("C2");
-
-                    if (currentOrderItems.Count > 0)
+                    dynamic selected = ordersDataGridView.SelectedRows[0].DataBoundItem;
+                    int orderId = selected.Id;
+                    Order order = currentOrders.FirstOrDefault(o => o.Id == orderId);
+                    if (order != null)
                     {
-                        var firstItem = currentOrderItems[0];
-                        Product product = context.GetAllProducts().FirstOrDefault(p => p.Id == firstItem.ProductId);
-                        if (product != null)
-                            orderProductLabel.Text = product.Name;
+                        orderIdLabel.Text = order.Id.ToString();
+                        orderDateLabel.Text = order.OrderDate.ToString("dd.MM.yyyy HH:mm");
+                        orderCustomerLabel.Text = GetUserLogin(order.UserId);
+                        orderStatusLabel.Text = order.Status;
+
+                        if (!string.IsNullOrEmpty(order.DeliveryAddress))
+                            orderAddressLabel.Text = order.DeliveryAddress;
                         else
-                            orderProductLabel.Text = $"Товар {firstItem.ProductId}";
-                        orderQuantityLabel.Text = firstItem.Quantity.ToString();
-                    }
-                    else
-                    {
-                        orderProductLabel.Text = "—";
-                        orderQuantityLabel.Text = "0";
+                            orderAddressLabel.Text = "—";
+
+                        if (order.IssueDate.HasValue)
+                            orderIssueDateLabel.Text = order.IssueDate.Value.ToString("dd.MM.yyyy");
+                        else
+                            orderIssueDateLabel.Text = "—";
+
+                        List<OrderItem> items = context.GetOrderItems(orderId);
+                        currentOrderItems = new BindingList<OrderItem>(items);
+                        orderTotalLabelDetails.Text = currentOrderItems.Sum(i => i.Price * i.Quantity).ToString("C2");
+
+                        if (currentOrderItems.Count > 0)
+                        {
+                            var firstItem = currentOrderItems[0];
+                            Product product = context.GetAllProducts().FirstOrDefault(p => p.Id == firstItem.ProductId);
+                            if (product != null)
+                                orderProductLabel.Text = product.Name;
+                            else
+                                orderProductLabel.Text = $"Товар {firstItem.ProductId}";
+                            orderQuantityLabel.Text = firstItem.Quantity.ToString();
+                        }
+                        else
+                        {
+                            orderProductLabel.Text = "—";
+                            orderQuantityLabel.Text = "0";
+                        }
                     }
                 }
+                else
+                {
+                    ClearOrderDetails();
+                }
             }
-            else
+            catch (Exception ex)
             {
+                MessageBox.Show($"Ошибка при загрузке деталей заказа: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ClearOrderDetails();
             }
         }
@@ -748,6 +794,59 @@ namespace ShoesStore.Forms
         private void refreshOrdersButton_Click(object sender, EventArgs e)
         {
             LoadOrders();
+        }
+
+        private void addOrderButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OrderEditForm editForm = new OrderEditForm();
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    LoadOrders();
+                    FillStatusFilter();
+                    if (ordersDataGridView.Rows.Count > 0)
+                    {
+                        ordersDataGridView.Rows[ordersDataGridView.Rows.Count - 1].Selected = true;
+                    }
+                    else
+                    {
+                        ClearOrderDetails();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии формы добавления заказа: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void editOrderButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ordersDataGridView.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Выберите заказ для редактирования.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                dynamic selected = ordersDataGridView.SelectedRows[0].DataBoundItem;
+                int orderId = selected.Id;
+                Order order = currentOrders.FirstOrDefault(o => o.Id == orderId);
+                if (order != null)
+                {
+                    OrderEditForm editForm = new OrderEditForm(order);
+                    if (editForm.ShowDialog() == DialogResult.OK)
+                    {
+                        LoadOrders();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии формы редактирования заказа: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void deleteOrderButton_Click(object sender, EventArgs e)
@@ -839,6 +938,9 @@ namespace ShoesStore.Forms
                     createOrderProductStockLabel.Text = "0";
                     createOrderTotalLabel.Text = "0";
                 }
+                // Очистка полей адреса и даты
+                deliveryAddressTextBox.Clear();
+                issueDatePicker.Checked = false;
             }
             catch (Exception ex)
             {
@@ -928,13 +1030,24 @@ namespace ShoesStore.Forms
                 return;
             }
 
+            // Проверка адреса
+            string deliveryAddress = deliveryAddressTextBox.Text.Trim();
+            if (string.IsNullOrEmpty(deliveryAddress))
+            {
+                MessageBox.Show("Введите адрес доставки.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                deliveryAddressTextBox.Focus();
+                return;
+            }
+
             try
             {
                 Order newOrder = new Order
                 {
                     UserId = currentUser.Id,
                     OrderDate = DateTime.Now,
-                    Status = "New"
+                    Status = "New",
+                    DeliveryAddress = deliveryAddress,
+                    IssueDate = issueDatePicker.Checked ? issueDatePicker.Value : (DateTime?)null
                 };
 
                 List<OrderItem> items = new List<OrderItem>
@@ -1020,6 +1133,5 @@ namespace ShoesStore.Forms
             LoadProductsForPurchase();
         }
         #endregion
-
     }
 }

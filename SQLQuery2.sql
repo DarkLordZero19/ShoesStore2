@@ -12,9 +12,9 @@ INSERT INTO Products (Name, Description, Price, Quantity, Category, Manufacturer
 (N'Ботинки демисезонные', N'Нет в наличии', 8500.00, 0, N'Ботинки', N'Columbia', N'Спорттовары', N'пара', 0.0, NULL);
 
 -- Добавление заказов
-INSERT INTO Orders (UserId, OrderDate, Status) VALUES
-(3, '2025-02-01', 'New'),
-(3, '2025-02-05', 'Completed');
+INSERT INTO Orders (UserId, OrderDate, Status, DeliveryAddress, IssueDate) VALUES
+(3, '2025-02-01', 'New', N'ул. Ленина, д.10, кв.5', NULL),
+(3, '2025-02-05', 'Completed', N'ул. Гагарина, д.15', '2025-02-06');
 
 -- Добавление позиций заказов
 INSERT INTO OrderItems (OrderId, ProductId, Quantity, Price) VALUES

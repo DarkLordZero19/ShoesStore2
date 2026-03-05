@@ -28,6 +28,8 @@ CREATE TABLE Orders (
     UserId INT NOT NULL,
     OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
     Status NVARCHAR(20) NOT NULL CHECK (Status IN ('New', 'Processing', 'Completed', 'Cancelled')),
+    DeliveryAddress NVARCHAR(200) NULL,
+    IssueDate DATETIME NULL,
     CONSTRAINT FK_Orders_Users FOREIGN KEY (UserId) REFERENCES Users(Id)
 );
 

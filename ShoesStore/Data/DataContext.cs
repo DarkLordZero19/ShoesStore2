@@ -340,7 +340,7 @@ namespace ShoesStore.Data
         public List<Order> GetOrders(int? userId, DateTime? dateFrom, DateTime? dateTo, string status)
         {
             List<Order> orders = new List<Order>();
-            string query = "SELECT Id, UserId, OrderDate, Status FROM Orders WHERE 1=1";
+            string query = "SELECT Id, UserId, OrderDate, Status, DeliveryAddress, IssueDate FROM Orders WHERE 1=1";
             if (userId.HasValue)
                 query += " AND UserId = @UserId";
             if (dateFrom.HasValue)
@@ -375,6 +375,15 @@ namespace ShoesStore.Data
                             OrderDate = reader.GetDateTime(2),
                             Status = reader.GetString(3)
                         };
+                        if (!reader.IsDBNull(4))
+                            order.DeliveryAddress = reader.GetString(4);
+                        else
+                            order.DeliveryAddress = null;
+
+                        if (!reader.IsDBNull(5))
+                            order.IssueDate = reader.GetDateTime(5);
+                        else
+                            order.IssueDate = null;
                         orders.Add(order);
                     }
                 }
@@ -421,11 +430,20 @@ namespace ShoesStore.Data
                 try
                 {
                     //Вставка заказа
-                    string orderQuery = "INSERT INTO Orders (UserId, OrderDate, Status) VALUES (@UserId, @OrderDate, @Status); SELECT SCOPE_IDENTITY();";
+                    string orderQuery = "INSERT INTO Orders (UserId, OrderDate, Status, DeliveryAddress, IssueDate) VALUES (@UserId, @OrderDate, @Status, @DeliveryAddress, @IssueDate); SELECT SCOPE_IDENTITY();";
                     SqlCommand orderCmd = new SqlCommand(orderQuery, connection, transaction);
                     orderCmd.Parameters.AddWithValue("@UserId", order.UserId);
                     orderCmd.Parameters.AddWithValue("@OrderDate", order.OrderDate);
                     orderCmd.Parameters.AddWithValue("@Status", order.Status);
+                    if (order.DeliveryAddress != null)
+                        orderCmd.Parameters.AddWithValue("@DeliveryAddress", order.DeliveryAddress);
+                    else
+                        orderCmd.Parameters.AddWithValue("@DeliveryAddress", DBNull.Value);
+
+                    if (order.IssueDate != null)
+                        orderCmd.Parameters.AddWithValue("@IssueDate", order.IssueDate.Value);
+                    else
+                        orderCmd.Parameters.AddWithValue("@IssueDate", DBNull.Value);
                     int orderId = Convert.ToInt32(orderCmd.ExecuteScalar());
 
                     // Вставка позиций и обновление остатков
@@ -457,6 +475,31 @@ namespace ShoesStore.Data
             }
         }
 
+        //Обновить заказ
+        public void UpdateOrder(Order order)
+        {
+            string query = @"UPDATE Orders SET UserId = @UserId, OrderDate = @OrderDate, Status = @Status, DeliveryAddress = @DeliveryAddress, IssueDate = @IssueDate WHERE Id = @Id";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", order.Id);
+                command.Parameters.AddWithValue("@UserId", order.UserId);
+                command.Parameters.AddWithValue("@OrderDate", order.OrderDate);
+                command.Parameters.AddWithValue("@Status", order.Status);
+                if (order.DeliveryAddress != null)
+                    command.Parameters.AddWithValue("@DeliveryAddress", order.DeliveryAddress);
+                else
+                    command.Parameters.AddWithValue("@DeliveryAddress", DBNull.Value);
+
+                if (order.IssueDate != null)
+                    command.Parameters.AddWithValue("@IssueDate", order.IssueDate.Value);
+                else
+                    command.Parameters.AddWithValue("@IssueDate", DBNull.Value);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
         //Обновить статус заказа
         public void UpdateOrderStatus(int orderId, string newStatus)
         {
@@ -470,6 +513,36 @@ namespace ShoesStore.Data
                 command.ExecuteNonQuery();
             }
         }
+
+        //Получения списка клиентов
+        public List<User> GetAllClients()
+        {
+            List<User> users = new List<User>();
+            string query = "SELECT Id, Login, FullName FROM Users WHERE Role = 'Client'";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        User user = new User
+                        {
+                            Id = reader.GetInt32(0),
+                            Login = reader.GetString(1),
+                        };
+                        if (reader.IsDBNull(2))
+                            user.FullName = null;
+                        else
+                            user.FullName = reader.GetString(2);
+                        users.Add(user);
+                    }
+                }
+            }
+            return users;
+        }
+
 
         //Удалить заказ
         public void DeleteOrder(int orderId)

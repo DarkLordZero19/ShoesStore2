@@ -70,7 +70,13 @@
             searchProductButton = new Button();
             productsDataGridView = new DataGridView();
             ordersTab = new TabPage();
+            editOrderButton = new Button();
+            addOrderButton = new Button();
             TableInfoPanel2 = new Panel();
+            orderIssueDateLabel = new Label();
+            orderAddressLabel = new Label();
+            label30 = new Label();
+            label29 = new Label();
             label16 = new Label();
             label18 = new Label();
             label19 = new Label();
@@ -97,6 +103,10 @@
             searchOrderButton = new Button();
             ordersDataGridView = new DataGridView();
             createOrderTab = new TabPage();
+            label32 = new Label();
+            issueDatePicker = new DateTimePicker();
+            label31 = new Label();
+            deliveryAddressTextBox = new TextBox();
             label28 = new Label();
             label27 = new Label();
             label26 = new Label();
@@ -205,14 +215,14 @@
             TableInfoPanel.Controls.Add(productStockLabel);
             TableInfoPanel.Location = new Point(807, 17);
             TableInfoPanel.Name = "TableInfoPanel";
-            TableInfoPanel.Size = new Size(351, 493);
+            TableInfoPanel.Size = new Size(351, 514);
             TableInfoPanel.TabIndex = 37;
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label4.Location = new Point(19, 331);
+            label4.Location = new Point(21, 284);
             label4.Name = "label4";
             label4.Size = new Size(109, 15);
             label4.TabIndex = 31;
@@ -222,7 +232,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label5.Location = new Point(16, 304);
+            label5.Location = new Point(21, 249);
             label5.Name = "label5";
             label5.Size = new Size(134, 15);
             label5.TabIndex = 30;
@@ -232,7 +242,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label6.Location = new Point(19, 270);
+            label6.Location = new Point(21, 222);
             label6.Name = "label6";
             label6.Size = new Size(129, 15);
             label6.TabIndex = 29;
@@ -242,7 +252,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label7.Location = new Point(19, 231);
+            label7.Location = new Point(19, 192);
             label7.Name = "label7";
             label7.Size = new Size(76, 15);
             label7.TabIndex = 28;
@@ -252,7 +262,7 @@
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label8.Location = new Point(19, 195);
+            label8.Location = new Point(19, 156);
             label8.Name = "label8";
             label8.Size = new Size(102, 15);
             label8.TabIndex = 27;
@@ -262,7 +272,7 @@
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label9.Location = new Point(19, 166);
+            label9.Location = new Point(19, 136);
             label9.Name = "label9";
             label9.Size = new Size(68, 15);
             label9.TabIndex = 26;
@@ -292,7 +302,7 @@
             // 
             label12.AutoSize = true;
             label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label12.Location = new Point(19, 90);
+            label12.Location = new Point(19, 77);
             label12.Name = "label12";
             label12.Size = new Size(40, 15);
             label12.TabIndex = 24;
@@ -302,7 +312,7 @@
             // 
             label14.AutoSize = true;
             label14.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label14.Location = new Point(19, 127);
+            label14.Location = new Point(19, 103);
             label14.Name = "label14";
             label14.Size = new Size(55, 15);
             label14.TabIndex = 25;
@@ -312,7 +322,7 @@
             // 
             productDiscountedPriceLabel.AutoSize = true;
             productDiscountedPriceLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productDiscountedPriceLabel.Location = new Point(193, 331);
+            productDiscountedPriceLabel.Location = new Point(190, 284);
             productDiscountedPriceLabel.Name = "productDiscountedPriceLabel";
             productDiscountedPriceLabel.Size = new Size(109, 15);
             productDiscountedPriceLabel.TabIndex = 21;
@@ -322,7 +332,7 @@
             // 
             productDiscountLabel.AutoSize = true;
             productDiscountLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productDiscountLabel.Location = new Point(190, 304);
+            productDiscountLabel.Location = new Point(190, 249);
             productDiscountLabel.Name = "productDiscountLabel";
             productDiscountLabel.Size = new Size(134, 15);
             productDiscountLabel.TabIndex = 20;
@@ -332,7 +342,7 @@
             // 
             productUnitLabel.AutoSize = true;
             productUnitLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productUnitLabel.Location = new Point(193, 270);
+            productUnitLabel.Location = new Point(190, 222);
             productUnitLabel.Name = "productUnitLabel";
             productUnitLabel.Size = new Size(129, 15);
             productUnitLabel.TabIndex = 19;
@@ -342,7 +352,7 @@
             // 
             productSupplierLabel.AutoSize = true;
             productSupplierLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productSupplierLabel.Location = new Point(193, 231);
+            productSupplierLabel.Location = new Point(190, 192);
             productSupplierLabel.Name = "productSupplierLabel";
             productSupplierLabel.Size = new Size(76, 15);
             productSupplierLabel.TabIndex = 18;
@@ -352,7 +362,7 @@
             // 
             productManufacturerLabel.AutoSize = true;
             productManufacturerLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productManufacturerLabel.Location = new Point(193, 195);
+            productManufacturerLabel.Location = new Point(190, 156);
             productManufacturerLabel.Name = "productManufacturerLabel";
             productManufacturerLabel.Size = new Size(102, 15);
             productManufacturerLabel.TabIndex = 17;
@@ -362,7 +372,7 @@
             // 
             productDescriptionLabel.AutoSize = true;
             productDescriptionLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productDescriptionLabel.Location = new Point(193, 166);
+            productDescriptionLabel.Location = new Point(190, 136);
             productDescriptionLabel.Name = "productDescriptionLabel";
             productDescriptionLabel.Size = new Size(68, 15);
             productDescriptionLabel.TabIndex = 16;
@@ -373,7 +383,7 @@
             // 
             productNameLabel.AutoSize = true;
             productNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productNameLabel.Location = new Point(193, 19);
+            productNameLabel.Location = new Point(190, 19);
             productNameLabel.Name = "productNameLabel";
             productNameLabel.Size = new Size(90, 15);
             productNameLabel.TabIndex = 9;
@@ -384,7 +394,7 @@
             // 
             productCategoryLabel.AutoSize = true;
             productCategoryLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productCategoryLabel.Location = new Point(193, 49);
+            productCategoryLabel.Location = new Point(190, 49);
             productCategoryLabel.Name = "productCategoryLabel";
             productCategoryLabel.Size = new Size(70, 15);
             productCategoryLabel.TabIndex = 10;
@@ -395,7 +405,7 @@
             // 
             productPriceLabel.AutoSize = true;
             productPriceLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productPriceLabel.Location = new Point(193, 90);
+            productPriceLabel.Location = new Point(190, 77);
             productPriceLabel.Name = "productPriceLabel";
             productPriceLabel.Size = new Size(40, 15);
             productPriceLabel.TabIndex = 11;
@@ -406,7 +416,7 @@
             // 
             productStockLabel.AutoSize = true;
             productStockLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            productStockLabel.Location = new Point(193, 127);
+            productStockLabel.Location = new Point(190, 103);
             productStockLabel.Name = "productStockLabel";
             productStockLabel.Size = new Size(55, 15);
             productStockLabel.TabIndex = 12;
@@ -575,6 +585,8 @@
             // 
             // ordersTab
             // 
+            ordersTab.Controls.Add(editOrderButton);
+            ordersTab.Controls.Add(addOrderButton);
             ordersTab.Controls.Add(TableInfoPanel2);
             ordersTab.Controls.Add(orderSearchTextBox);
             ordersTab.Controls.Add(deleteOrderButton);
@@ -597,8 +609,36 @@
             ordersTab.Click += ordersTab_Click;
             ordersTab.Enter += ordersTab_Enter;
             // 
+            // editOrderButton
+            // 
+            editOrderButton.BackColor = SystemColors.ButtonHighlight;
+            editOrderButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            editOrderButton.Location = new Point(667, 379);
+            editOrderButton.Name = "editOrderButton";
+            editOrderButton.Size = new Size(120, 42);
+            editOrderButton.TabIndex = 52;
+            editOrderButton.Text = "Редактировать заказ";
+            editOrderButton.UseVisualStyleBackColor = false;
+            editOrderButton.Click += editOrderButton_Click;
+            // 
+            // addOrderButton
+            // 
+            addOrderButton.BackColor = SystemColors.ButtonHighlight;
+            addOrderButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            addOrderButton.Location = new Point(667, 331);
+            addOrderButton.Name = "addOrderButton";
+            addOrderButton.Size = new Size(121, 42);
+            addOrderButton.TabIndex = 51;
+            addOrderButton.Text = "Добавить заказ";
+            addOrderButton.UseVisualStyleBackColor = false;
+            addOrderButton.Click += addOrderButton_Click;
+            // 
             // TableInfoPanel2
             // 
+            TableInfoPanel2.Controls.Add(orderIssueDateLabel);
+            TableInfoPanel2.Controls.Add(orderAddressLabel);
+            TableInfoPanel2.Controls.Add(label30);
+            TableInfoPanel2.Controls.Add(label29);
             TableInfoPanel2.Controls.Add(label16);
             TableInfoPanel2.Controls.Add(label18);
             TableInfoPanel2.Controls.Add(label19);
@@ -615,14 +655,54 @@
             TableInfoPanel2.Controls.Add(orderTotalLabelDetails);
             TableInfoPanel2.Location = new Point(805, 16);
             TableInfoPanel2.Name = "TableInfoPanel2";
-            TableInfoPanel2.Size = new Size(350, 494);
+            TableInfoPanel2.Size = new Size(350, 515);
             TableInfoPanel2.TabIndex = 50;
+            // 
+            // orderIssueDateLabel
+            // 
+            orderIssueDateLabel.AutoSize = true;
+            orderIssueDateLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            orderIssueDateLabel.Location = new Point(206, 161);
+            orderIssueDateLabel.Name = "orderIssueDateLabel";
+            orderIssueDateLabel.Size = new Size(84, 15);
+            orderIssueDateLabel.TabIndex = 46;
+            orderIssueDateLabel.Text = "Дата выдачи:";
+            // 
+            // orderAddressLabel
+            // 
+            orderAddressLabel.AutoSize = true;
+            orderAddressLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            orderAddressLabel.Location = new Point(206, 132);
+            orderAddressLabel.Name = "orderAddressLabel";
+            orderAddressLabel.Size = new Size(45, 15);
+            orderAddressLabel.TabIndex = 45;
+            orderAddressLabel.Text = "Адрес:";
+            // 
+            // label30
+            // 
+            label30.AutoSize = true;
+            label30.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label30.Location = new Point(23, 161);
+            label30.Name = "label30";
+            label30.Size = new Size(84, 15);
+            label30.TabIndex = 44;
+            label30.Text = "Дата выдачи:";
+            // 
+            // label29
+            // 
+            label29.AutoSize = true;
+            label29.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label29.Location = new Point(23, 132);
+            label29.Name = "label29";
+            label29.Size = new Size(45, 15);
+            label29.TabIndex = 43;
+            label29.Text = "Адрес:";
             // 
             // label16
             // 
             label16.AutoSize = true;
             label16.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label16.Location = new Point(23, 240);
+            label16.Location = new Point(23, 102);
             label16.Name = "label16";
             label16.Size = new Size(120, 15);
             label16.TabIndex = 40;
@@ -642,7 +722,7 @@
             // 
             label19.AutoSize = true;
             label19.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label19.Location = new Point(23, 108);
+            label19.Location = new Point(23, 192);
             label19.Name = "label19";
             label19.Size = new Size(43, 15);
             label19.TabIndex = 37;
@@ -662,7 +742,7 @@
             // 
             label21.AutoSize = true;
             label21.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label21.Location = new Point(23, 152);
+            label21.Location = new Point(23, 219);
             label21.Name = "label21";
             label21.Size = new Size(79, 15);
             label21.TabIndex = 38;
@@ -682,7 +762,7 @@
             // 
             label23.AutoSize = true;
             label23.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label23.Location = new Point(23, 197);
+            label23.Location = new Point(23, 246);
             label23.Name = "label23";
             label23.Size = new Size(43, 15);
             label23.TabIndex = 39;
@@ -692,7 +772,7 @@
             // 
             orderStatusLabel.AutoSize = true;
             orderStatusLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            orderStatusLabel.Location = new Point(206, 240);
+            orderStatusLabel.Location = new Point(206, 102);
             orderStatusLabel.Name = "orderStatusLabel";
             orderStatusLabel.Size = new Size(120, 15);
             orderStatusLabel.TabIndex = 15;
@@ -714,7 +794,7 @@
             // 
             orderProductLabel.AutoSize = true;
             orderProductLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            orderProductLabel.Location = new Point(206, 108);
+            orderProductLabel.Location = new Point(206, 192);
             orderProductLabel.Name = "orderProductLabel";
             orderProductLabel.Size = new Size(43, 15);
             orderProductLabel.TabIndex = 12;
@@ -736,7 +816,7 @@
             // 
             orderQuantityLabel.AutoSize = true;
             orderQuantityLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            orderQuantityLabel.Location = new Point(206, 152);
+            orderQuantityLabel.Location = new Point(206, 219);
             orderQuantityLabel.Name = "orderQuantityLabel";
             orderQuantityLabel.Size = new Size(79, 15);
             orderQuantityLabel.TabIndex = 13;
@@ -758,7 +838,7 @@
             // 
             orderTotalLabelDetails.AutoSize = true;
             orderTotalLabelDetails.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            orderTotalLabelDetails.Location = new Point(206, 197);
+            orderTotalLabelDetails.Location = new Point(206, 246);
             orderTotalLabelDetails.Name = "orderTotalLabelDetails";
             orderTotalLabelDetails.Size = new Size(43, 15);
             orderTotalLabelDetails.TabIndex = 14;
@@ -777,7 +857,7 @@
             // 
             deleteOrderButton.BackColor = SystemColors.ButtonHighlight;
             deleteOrderButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            deleteOrderButton.Location = new Point(667, 355);
+            deleteOrderButton.Location = new Point(666, 489);
             deleteOrderButton.Name = "deleteOrderButton";
             deleteOrderButton.Size = new Size(121, 42);
             deleteOrderButton.TabIndex = 48;
@@ -809,7 +889,7 @@
             // 
             refreshOrdersButton.BackColor = SystemColors.ButtonHighlight;
             refreshOrdersButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            refreshOrdersButton.Location = new Point(667, 297);
+            refreshOrdersButton.Location = new Point(667, 283);
             refreshOrdersButton.Name = "refreshOrdersButton";
             refreshOrdersButton.Size = new Size(121, 42);
             refreshOrdersButton.TabIndex = 45;
@@ -882,6 +962,10 @@
             // 
             // createOrderTab
             // 
+            createOrderTab.Controls.Add(label32);
+            createOrderTab.Controls.Add(issueDatePicker);
+            createOrderTab.Controls.Add(label31);
+            createOrderTab.Controls.Add(deliveryAddressTextBox);
             createOrderTab.Controls.Add(label28);
             createOrderTab.Controls.Add(label27);
             createOrderTab.Controls.Add(label26);
@@ -903,11 +987,44 @@
             createOrderTab.Click += createOrderTab_Click;
             createOrderTab.Enter += createOrderTab_Enter;
             // 
+            // label32
+            // 
+            label32.AutoSize = true;
+            label32.Location = new Point(578, 270);
+            label32.Name = "label32";
+            label32.Size = new Size(79, 15);
+            label32.TabIndex = 66;
+            label32.Text = "Дата выдачи:";
+            // 
+            // issueDatePicker
+            // 
+            issueDatePicker.Location = new Point(579, 288);
+            issueDatePicker.Name = "issueDatePicker";
+            issueDatePicker.ShowCheckBox = true;
+            issueDatePicker.Size = new Size(164, 23);
+            issueDatePicker.TabIndex = 65;
+            // 
+            // label31
+            // 
+            label31.AutoSize = true;
+            label31.Location = new Point(579, 220);
+            label31.Name = "label31";
+            label31.Size = new Size(43, 15);
+            label31.TabIndex = 64;
+            label31.Text = "Адрес:";
+            // 
+            // deliveryAddressTextBox
+            // 
+            deliveryAddressTextBox.Location = new Point(579, 238);
+            deliveryAddressTextBox.Name = "deliveryAddressTextBox";
+            deliveryAddressTextBox.Size = new Size(164, 23);
+            deliveryAddressTextBox.TabIndex = 63;
+            // 
             // label28
             // 
             label28.AutoSize = true;
             label28.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            label28.Location = new Point(579, 356);
+            label28.Location = new Point(579, 380);
             label28.Name = "label28";
             label28.Size = new Size(102, 15);
             label28.TabIndex = 62;
@@ -917,7 +1034,7 @@
             // 
             label27.AutoSize = true;
             label27.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            label27.Location = new Point(578, 230);
+            label27.Location = new Point(579, 188);
             label27.Name = "label27";
             label27.Size = new Size(138, 15);
             label27.TabIndex = 61;
@@ -927,7 +1044,7 @@
             // 
             label26.AutoSize = true;
             label26.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            label26.Location = new Point(578, 193);
+            label26.Location = new Point(579, 151);
             label26.Name = "label26";
             label26.Size = new Size(81, 15);
             label26.TabIndex = 60;
@@ -937,7 +1054,7 @@
             // 
             createOrderTotalLabel.AutoSize = true;
             createOrderTotalLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            createOrderTotalLabel.Location = new Point(722, 356);
+            createOrderTotalLabel.Location = new Point(722, 380);
             createOrderTotalLabel.Name = "createOrderTotalLabel";
             createOrderTotalLabel.Size = new Size(102, 15);
             createOrderTotalLabel.TabIndex = 59;
@@ -947,7 +1064,7 @@
             // label25
             // 
             label25.AutoSize = true;
-            label25.Location = new Point(579, 299);
+            label25.Location = new Point(579, 323);
             label25.Name = "label25";
             label25.Size = new Size(113, 15);
             label25.TabIndex = 58;
@@ -956,9 +1073,9 @@
             // orderQuantityComboBox
             // 
             orderQuantityComboBox.FormattingEnabled = true;
-            orderQuantityComboBox.Location = new Point(579, 317);
+            orderQuantityComboBox.Location = new Point(579, 341);
             orderQuantityComboBox.Name = "orderQuantityComboBox";
-            orderQuantityComboBox.Size = new Size(136, 23);
+            orderQuantityComboBox.Size = new Size(164, 23);
             orderQuantityComboBox.TabIndex = 56;
             orderQuantityComboBox.SelectedIndexChanged += orderQuantityComboBox_SelectedIndexChanged;
             // 
@@ -966,7 +1083,7 @@
             // 
             createOrderProductStockLabel.AutoSize = true;
             createOrderProductStockLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            createOrderProductStockLabel.Location = new Point(722, 230);
+            createOrderProductStockLabel.Location = new Point(723, 188);
             createOrderProductStockLabel.Name = "createOrderProductStockLabel";
             createOrderProductStockLabel.Size = new Size(138, 15);
             createOrderProductStockLabel.TabIndex = 54;
@@ -977,7 +1094,7 @@
             // 
             createOrderProductPriceLabel.AutoSize = true;
             createOrderProductPriceLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            createOrderProductPriceLabel.Location = new Point(722, 193);
+            createOrderProductPriceLabel.Location = new Point(723, 151);
             createOrderProductPriceLabel.Name = "createOrderProductPriceLabel";
             createOrderProductPriceLabel.Size = new Size(81, 15);
             createOrderProductPriceLabel.TabIndex = 53;
@@ -988,9 +1105,9 @@
             // 
             createOrderButton.BackColor = SystemColors.ButtonHighlight;
             createOrderButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            createOrderButton.Location = new Point(579, 389);
+            createOrderButton.Location = new Point(579, 413);
             createOrderButton.Name = "createOrderButton";
-            createOrderButton.Size = new Size(137, 42);
+            createOrderButton.Size = new Size(164, 42);
             createOrderButton.TabIndex = 52;
             createOrderButton.Text = "Сделать заказ";
             createOrderButton.UseVisualStyleBackColor = false;
@@ -999,7 +1116,7 @@
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new Point(579, 123);
+            label17.Location = new Point(580, 81);
             label17.Name = "label17";
             label17.Size = new Size(87, 15);
             label17.TabIndex = 51;
@@ -1008,9 +1125,9 @@
             // createOrderProductComboBox
             // 
             createOrderProductComboBox.FormattingEnabled = true;
-            createOrderProductComboBox.Location = new Point(579, 150);
+            createOrderProductComboBox.Location = new Point(580, 108);
             createOrderProductComboBox.Name = "createOrderProductComboBox";
-            createOrderProductComboBox.Size = new Size(136, 23);
+            createOrderProductComboBox.Size = new Size(163, 23);
             createOrderProductComboBox.TabIndex = 50;
             createOrderProductComboBox.SelectedIndexChanged += createOrderProductComboBox_SelectedIndexChanged;
             // 
@@ -1173,5 +1290,15 @@
         private Label label28;
         private Label label27;
         private Label label26;
+        private Button editOrderButton;
+        private Button addOrderButton;
+        private Label label29;
+        private Label orderIssueDateLabel;
+        private Label orderAddressLabel;
+        private Label label30;
+        private DateTimePicker issueDatePicker;
+        private Label label31;
+        private TextBox deliveryAddressTextBox;
+        private Label label32;
     }
 }

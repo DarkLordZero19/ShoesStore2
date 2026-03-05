@@ -11,6 +11,8 @@ namespace ShoesStore.Module
         public int Id { get; set; }
         public int UserId { get; set; }
         public DateTime OrderDate { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } // New, Processing, Completed, Cancelled
+        public string DeliveryAddress { get; set; }
+        public DateTime? IssueDate { get; set; }
     }
 }
