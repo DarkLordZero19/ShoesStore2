@@ -90,7 +90,7 @@
             basicInfoPanel.Controls.Add(deliveryAddressTextBox);
             basicInfoPanel.Controls.Add(statusComboBox);
             basicInfoPanel.Controls.Add(clientComboBox);
-            basicInfoPanel.Location = new Point(115, 12);
+            basicInfoPanel.Location = new Point(115, 69);
             basicInfoPanel.Name = "basicInfoPanel";
             basicInfoPanel.Size = new Size(200, 177);
             basicInfoPanel.TabIndex = 4;
@@ -199,7 +199,7 @@
             dateTimePanel.Controls.Add(issueDatePicker);
             dateTimePanel.Controls.Add(label4);
             dateTimePanel.Controls.Add(orderDatePicker);
-            dateTimePanel.Location = new Point(387, 12);
+            dateTimePanel.Location = new Point(387, 69);
             dateTimePanel.Name = "dateTimePanel";
             dateTimePanel.Size = new Size(244, 177);
             dateTimePanel.TabIndex = 60;
