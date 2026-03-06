@@ -44,7 +44,6 @@
             orderDatePicker = new DateTimePicker();
             basicInfoPanel = new Panel();
             clientLabel = new Label();
-            idLabel = new Label();
             ((System.ComponentModel.ISupportInitialize)clientDataGridView).BeginInit();
             buttonsPanel.SuspendLayout();
             basicInfoPanel.SuspendLayout();
@@ -211,20 +210,11 @@
             clientLabel.TabIndex = 68;
             clientLabel.Text = "Выбор клиента:";
             // 
-            // idLabel
-            // 
-            idLabel.AutoSize = true;
-            idLabel.Location = new Point(676, 423);
-            idLabel.Name = "idLabel";
-            idLabel.Size = new Size(0, 15);
-            idLabel.TabIndex = 69;
-            // 
             // OrderEditsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(idLabel);
             Controls.Add(clientLabel);
             Controls.Add(basicInfoPanel);
             Controls.Add(userFullNameLabel);
@@ -259,6 +249,5 @@
         private DateTimePicker orderDatePicker;
         private Panel basicInfoPanel;
         private Label clientLabel;
-        private Label idLabel;
     }
 }

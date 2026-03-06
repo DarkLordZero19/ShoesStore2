@@ -801,7 +801,7 @@ namespace ShoesStore.Forms
         {
             try
             {
-                OrderEditsForm editForm = new OrderEditsForm();
+                OrderEditsForm editForm = new OrderEditsForm(null, currentUser);
                 if (editForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadOrders();

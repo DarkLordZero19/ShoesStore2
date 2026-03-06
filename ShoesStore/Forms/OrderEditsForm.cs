@@ -31,6 +31,7 @@ namespace ShoesStore.Forms
                 currentOrder = null;
                 LoadClients();
                 LoadStatuses();
+                // Дата выдачи по умолчанию не выбрана
                 issueDatePicker.Checked = false;
             }
             catch (Exception ex)
@@ -38,7 +39,6 @@ namespace ShoesStore.Forms
                 MessageBox.Show($"Ошибка инициализации формы: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             }
-            clientDataGridView.DataSource = clients;
         }
 
         public OrderEditsForm(Order order, User user) : this()
@@ -48,6 +48,7 @@ namespace ShoesStore.Forms
                 currentUser = user;
                 if (user != null)
                 {
+                    // Отображение ФИО пользователя
                     if (!string.IsNullOrEmpty(user.FullName))
                         userFullNameLabel.Text = user.FullName;
                     else
@@ -56,9 +57,11 @@ namespace ShoesStore.Forms
                 if (order != null)
                 {
                     currentOrder = order;
+                    // Режим редактирования
                     isNewOrder = false;
                     LoadOrderData();
                 }
+                // Настройка видимости кнопок
                 ConfigureButtonBasedOnRole();
             }
             catch (Exception ex)
@@ -68,13 +71,13 @@ namespace ShoesStore.Forms
                 this.Close();
             }
         }
-
+        // Настройка видимости кнопок сохранения и очистки
         private void ConfigureButtonBasedOnRole()
         {
             try
             {
                 if (currentUser == null) return;
-                // По умолчанию скрываем кнопки управления товарами
+                // По умолчанию скрываем кнопки управления заказами
                 saveButton.Visible = false;
                 ClearButton.Visible = false;
 
@@ -105,6 +108,7 @@ namespace ShoesStore.Forms
             }
         }
 
+        // Загрузка списка клиентов из БД и отображение в clientDataGridView
         private void LoadClients()
         {
             try
@@ -117,13 +121,12 @@ namespace ShoesStore.Forms
 
                 if (clientDataGridView.Columns["Id"] != null)
                     clientDataGridView.Columns["Id"].Visible = false;
-
                 if (clientDataGridView.Columns["Password"] != null)
                     clientDataGridView.Columns["Password"].Visible = false;
-
                 if (clientDataGridView.Columns["Role"] != null)
                     clientDataGridView.Columns["Role"].Visible = false;
 
+                // Автоматическое заполнение ширины столбцов
                 clientDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
                 clientDataGridView.ClearSelection();
@@ -134,6 +137,7 @@ namespace ShoesStore.Forms
             }
         }
 
+        // Заполнение списка статусов заказа
         private void LoadStatuses()
         {
             statusComboBox.Items.Clear();
@@ -141,12 +145,12 @@ namespace ShoesStore.Forms
             statusComboBox.SelectedIndex = 0;
         }
 
+        // Загрузка данных выбранного заказа в поля формы
         private void LoadOrderData()
         {
             if (currentOrder == null) return;
 
-            idLabel.Text = currentOrder.Id.ToString();
-
+            // Поиск и выделение клиента в таблице по его Id
             for (int i = 0; i < clientDataGridView.Rows.Count; i++)
             {
                 DataGridViewRow row = clientDataGridView.Rows[i];
@@ -158,6 +162,7 @@ namespace ShoesStore.Forms
                 }
             }
 
+            // При редактировании запрещаем менять клиента
             clientDataGridView.Enabled = false;
 
             statusComboBox.SelectedItem = currentOrder.Status;
@@ -167,6 +172,7 @@ namespace ShoesStore.Forms
                 deliveryAddressTextBox.Text = "";
             orderDatePicker.Value = currentOrder.OrderDate;
 
+            // Если дата выдачи указана, устанавливаем флажок и значение, иначе снимаем
             if (currentOrder.IssueDate.HasValue)
             {
                 issueDatePicker.Checked = true;
@@ -183,6 +189,7 @@ namespace ShoesStore.Forms
 
         }
 
+        // Сбор данных из полей формы в объект Order для сохранения
         private bool CollectOrderData(out Order order)
         {
             order = new Order();
@@ -209,17 +216,20 @@ namespace ShoesStore.Forms
             order.DeliveryAddress = deliveryAddressTextBox.Text.Trim();
             order.OrderDate = orderDatePicker.Value;
 
+            // Если флажок даты выдачи установлен, сохраняем выбранную дату, иначе null
             if (issueDatePicker.Checked)
                 order.IssueDate = issueDatePicker.Value;
             else
                 order.IssueDate = null;
 
+            // Если это редактирование, передаём идентификатор заказа
             if (!isNewOrder && currentOrder != null)
                 order.Id = currentOrder.Id;
 
             return true;
         }
 
+        // Сохранить заказ
         private void saveButton_Click(object sender, EventArgs e)
         {
             if (!CollectOrderData(out Order order))
@@ -228,6 +238,7 @@ namespace ShoesStore.Forms
             {
                 if (isNewOrder)
                 {
+                    // Для нового заказа создаём без позиций (пустой список)
                     context.AddOrder(order, new List<OrderItem>());
                     MessageBox.Show("Заказ успешно добавлен.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -245,6 +256,7 @@ namespace ShoesStore.Forms
             }
         }
 
+        // Сброс всех полей заказа
         private void ClearButton_Click(object sender, EventArgs e)
         {
             try
