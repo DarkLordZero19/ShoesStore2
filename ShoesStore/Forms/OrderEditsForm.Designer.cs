@@ -113,7 +113,7 @@
             // 
             userFullNameLabel.AutoSize = true;
             userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            userFullNameLabel.Location = new Point(85, 9);
+            userFullNameLabel.Location = new Point(98, 13);
             userFullNameLabel.Name = "userFullNameLabel";
             userFullNameLabel.Size = new Size(112, 15);
             userFullNameLabel.TabIndex = 58;
@@ -195,7 +195,7 @@
             basicInfoPanel.Controls.Add(label4);
             basicInfoPanel.Controls.Add(deliveryAddressLabel);
             basicInfoPanel.Controls.Add(orderDatePicker);
-            basicInfoPanel.Location = new Point(20, 63);
+            basicInfoPanel.Location = new Point(33, 67);
             basicInfoPanel.Name = "basicInfoPanel";
             basicInfoPanel.Size = new Size(246, 218);
             basicInfoPanel.TabIndex = 67;

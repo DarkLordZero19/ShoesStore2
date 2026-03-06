@@ -21,7 +21,6 @@ namespace ShoesStore.Forms
         private BindingList<Product> currentProducts;
         private BindingList<Order> currentOrders;
         private BindingList<OrderItem> currentOrderItems;
-        private BindingList<User> clients;
 
         public ManagementForm()
         {
@@ -102,9 +101,8 @@ namespace ShoesStore.Forms
                         break;
                     case "Manager":
                         createOrderTab.Parent = null;
-                        addOrderButton.Visible = false;
-                        editOrderButton.Visible = false;
-                        deleteOrderButton.Visible = false;
+                        addOrderButton.Visible = true;
+                        editOrderButton.Visible = true;
                         break;
                     case "Admin":
                         addProductButton.Visible = true;
@@ -474,7 +472,7 @@ namespace ShoesStore.Forms
         {
             try
             {
-                ProductEditForm editForm = new ProductEditForm(null);
+                ProductEditForm editForm = new ProductEditForm(null, currentUser);
                 if (editForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadProducts();
@@ -503,7 +501,7 @@ namespace ShoesStore.Forms
                 Product selected = productsDataGridView.SelectedRows[0].DataBoundItem as Product;
                 if (selected != null)
                 {
-                    ProductEditForm editForm = new ProductEditForm(selected);
+                    ProductEditForm editForm = new ProductEditForm(selected, currentUser);
                     if (editForm.ShowDialog() == DialogResult.OK)
                     {
                         LoadProducts();

@@ -19,6 +19,7 @@ namespace ShoesStore.Forms
         private Product currentProduct;
         // ID нового товара генерируется базой данных, при редактировании ID только для чтения
         private bool isNewProduct;
+        private User currentUser;
         public ProductEditForm()
         {
             try
@@ -36,10 +37,19 @@ namespace ShoesStore.Forms
                 this.Close();
             }
         }
-        public ProductEditForm(Product product) : this()
+        public ProductEditForm(Product product, User user) : this()
         {
             try
             {
+                currentUser = user;
+                if (user != null)
+                {
+                    // Отображение ФИО пользователя
+                    if (!string.IsNullOrEmpty(user.FullName))
+                        userFullNameLabel.Text = user.FullName;
+                    else
+                        userFullNameLabel.Text = user.Login;
+                }
                 if (product != null)
                 {
                     currentProduct = product;

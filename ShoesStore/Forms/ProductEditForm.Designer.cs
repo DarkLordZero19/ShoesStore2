@@ -63,6 +63,7 @@
             supplierTextBox = new TextBox();
             pictureBoxPreview = new PictureBox();
             pictureLabel = new Label();
+            userFullNameLabel = new Label();
             descriptionPanel.SuspendLayout();
             basicInfoPanel.SuspendLayout();
             buttonsPanel.SuspendLayout();
@@ -405,11 +406,22 @@
             pictureLabel.TabIndex = 37;
             pictureLabel.Text = "Предпросмотр изображения:";
             // 
+            // userFullNameLabel
+            // 
+            userFullNameLabel.AutoSize = true;
+            userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            userFullNameLabel.Location = new Point(422, 9);
+            userFullNameLabel.Name = "userFullNameLabel";
+            userFullNameLabel.Size = new Size(112, 15);
+            userFullNameLabel.TabIndex = 59;
+            userFullNameLabel.Text = "userFullNameLabel";
+            // 
             // ProductEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1022, 450);
+            Controls.Add(userFullNameLabel);
             Controls.Add(pictureLabel);
             Controls.Add(pictureBoxPreview);
             Controls.Add(descriptionPanel);
@@ -469,5 +481,6 @@
         private Label pictureLabel;
         private ComboBox categoryComboBox;
         private ComboBox manufacturerComboBox;
+        private Label userFullNameLabel;
     }
 }
