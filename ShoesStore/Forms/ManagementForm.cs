@@ -21,6 +21,7 @@ namespace ShoesStore.Forms
         private BindingList<Product> currentProducts;
         private BindingList<Order> currentOrders;
         private BindingList<OrderItem> currentOrderItems;
+        private BindingList<User> clients;
 
         public ManagementForm()
         {
@@ -800,7 +801,7 @@ namespace ShoesStore.Forms
         {
             try
             {
-                OrderEditForm editForm = new OrderEditForm();
+                OrderEditsForm editForm = new OrderEditsForm();
                 if (editForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadOrders();
@@ -836,7 +837,7 @@ namespace ShoesStore.Forms
                 Order order = currentOrders.FirstOrDefault(o => o.Id == orderId);
                 if (order != null)
                 {
-                    OrderEditForm editForm = new OrderEditForm(order);
+                    OrderEditsForm editForm = new OrderEditsForm(order, currentUser);
                     if (editForm.ShowDialog() == DialogResult.OK)
                     {
                         LoadOrders();

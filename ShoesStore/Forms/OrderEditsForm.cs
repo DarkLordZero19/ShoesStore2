@@ -13,13 +13,15 @@ using ShoesStore.Forms;
 
 namespace ShoesStore.Forms
 {
-    public partial class OrderEditForm : Form
+    public partial class OrderEditsForm : Form
     {
         private DataContext context;
+        private BindingList<User> clients;
         private Order currentOrder;
         private bool isNewOrder;
-        private List<User> clients;
-        public OrderEditForm()
+        private User currentUser;
+
+        public OrderEditsForm()
         {
             try
             {
@@ -29,7 +31,6 @@ namespace ShoesStore.Forms
                 currentOrder = null;
                 LoadClients();
                 LoadStatuses();
-                // Тут устанавливаем флажок нового заказа, а также очищаем поле даты выдачи (по умолчанию не выбрано)
                 issueDatePicker.Checked = false;
             }
             catch (Exception ex)
@@ -37,15 +38,70 @@ namespace ShoesStore.Forms
                 MessageBox.Show($"Ошибка инициализации формы: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             }
+            clientDataGridView.DataSource = clients;
         }
 
-        public OrderEditForm(Order order) : this()
+        public OrderEditsForm(Order order, User user) : this()
         {
-            if (order != null)
+            try
             {
-                currentOrder = order;
-                isNewOrder = false;
-                LoadOrderData();
+                currentUser = user;
+                if (user != null)
+                {
+                    if (!string.IsNullOrEmpty(user.FullName))
+                        userFullNameLabel.Text = user.FullName;
+                    else
+                        userFullNameLabel.Text = user.Login;
+                }
+                if (order != null)
+                {
+                    currentOrder = order;
+                    isNewOrder = false;
+                    LoadOrderData();
+                }
+                ConfigureButtonBasedOnRole();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при настройке формы: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+            }
+        }
+
+        private void ConfigureButtonBasedOnRole()
+        {
+            try
+            {
+                if (currentUser == null) return;
+                // По умолчанию скрываем кнопки управления товарами
+                saveButton.Visible = false;
+                ClearButton.Visible = false;
+
+                switch (currentUser.Role)
+                {
+                    case "Client":
+                        saveButton.Visible = false;
+                        ClearButton.Visible = false;
+                        break;
+                    case "Manager":
+                        saveButton.Visible = false;
+                        ClearButton.Visible = false;
+                        break;
+                    case "Admin":
+                        saveButton.Visible = true;
+                        ClearButton.Visible = true;
+                        break;
+                    case "Guest":
+                        saveButton.Visible = false;
+                        ClearButton.Visible = false;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при настройке ролей: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -53,10 +109,24 @@ namespace ShoesStore.Forms
         {
             try
             {
-                clients = context.GetAllClients();
-                clientComboBox.DisplayMember = "FullName";
-                clientComboBox.ValueMember = "Id";
-                clientComboBox.DataSource = clients;
+                List<User> allClients = context.GetAllClients();
+                clients = new BindingList<User>(allClients);
+
+                clientDataGridView.DataSource = null;
+                clientDataGridView.DataSource = clients;
+
+                if (clientDataGridView.Columns["Id"] != null)
+                    clientDataGridView.Columns["Id"].Visible = false;
+
+                if (clientDataGridView.Columns["Password"] != null)
+                    clientDataGridView.Columns["Password"].Visible = false;
+
+                if (clientDataGridView.Columns["Role"] != null)
+                    clientDataGridView.Columns["Role"].Visible = false;
+
+                clientDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+                clientDataGridView.ClearSelection();
             }
             catch (Exception ex)
             {
@@ -76,18 +146,19 @@ namespace ShoesStore.Forms
             if (currentOrder == null) return;
 
             idLabel.Text = currentOrder.Id.ToString();
-            // Поиск и выбор клиента в списке по идентификатору
-            for (int i = 0; i < clientComboBox.Items.Count; i++)
+
+            for (int i = 0; i < clientDataGridView.Rows.Count; i++)
             {
-                User user = clientComboBox.Items[i] as User;
+                DataGridViewRow row = clientDataGridView.Rows[i];
+                User user = row.DataBoundItem as User;
                 if (user != null && user.Id == currentOrder.UserId)
                 {
-                    clientComboBox.SelectedIndex = i;
+                    clientDataGridView.Rows[i].Selected = true;
                     break;
                 }
             }
-            // При редактировании запрещаем менять клиента
-            clientComboBox.Enabled = false;
+
+            clientDataGridView.Enabled = false;
 
             statusComboBox.SelectedItem = currentOrder.Status;
             if (currentOrder.DeliveryAddress != null)
@@ -95,7 +166,7 @@ namespace ShoesStore.Forms
             else
                 deliveryAddressTextBox.Text = "";
             orderDatePicker.Value = currentOrder.OrderDate;
-            // Если дата выдачи указана, то устанавливаем флажок и значение, иначе снимаем флажок
+
             if (currentOrder.IssueDate.HasValue)
             {
                 issueDatePicker.Checked = true;
@@ -107,14 +178,23 @@ namespace ShoesStore.Forms
             }
         }
 
-        // Считываем данные из полей формы в объект Order
+        private void OrderEditsForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private bool CollectOrderData(out Order order)
         {
             order = new Order();
-
-            if (clientComboBox.SelectedItem == null)
+            if (clientDataGridView.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Выберите клиента.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            User selectedClient = clientDataGridView.SelectedRows[0].DataBoundItem as User;
+            if (selectedClient == null)
+            {
+                MessageBox.Show("Ошибка получения данных клиента.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -124,7 +204,7 @@ namespace ShoesStore.Forms
                 return false;
             }
 
-            order.UserId = ((User)clientComboBox.SelectedItem).Id;
+            order.UserId = selectedClient.Id;
             order.Status = statusComboBox.SelectedItem.ToString();
             order.DeliveryAddress = deliveryAddressTextBox.Text.Trim();
             order.OrderDate = orderDatePicker.Value;
@@ -144,12 +224,10 @@ namespace ShoesStore.Forms
         {
             if (!CollectOrderData(out Order order))
                 return;
-
             try
             {
                 if (isNewOrder)
                 {
-                    // При добавлении нового заказа создаём его без позиций (пустой список)
                     context.AddOrder(order, new List<OrderItem>());
                     MessageBox.Show("Заказ успешно добавлен.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -171,7 +249,7 @@ namespace ShoesStore.Forms
         {
             try
             {
-                clientComboBox.SelectedIndex = -1;
+                clientDataGridView.ClearSelection();
                 statusComboBox.SelectedIndex = 0;
                 deliveryAddressTextBox.Clear();
                 orderDatePicker.Value = DateTime.Now;
@@ -187,6 +265,14 @@ namespace ShoesStore.Forms
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private void clientDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                deliveryAddressTextBox.Focus();
+            }
         }
     }
 }
