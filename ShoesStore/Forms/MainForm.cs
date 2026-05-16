@@ -37,6 +37,7 @@ namespace ShoesStore.Forms
             currentUser = user;
             if (user != null)
             {
+                // Отображение ФИО пользователя
                 if (!string.IsNullOrEmpty(user.FullName))
                     userFullNameLabel.Text = user.FullName;
                 else
