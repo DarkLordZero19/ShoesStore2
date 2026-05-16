@@ -221,7 +221,7 @@
             Controls.Add(buttonsPanel);
             Controls.Add(clientDataGridView);
             Name = "OrderEditsForm";
-            Text = "OrderEditsForm";
+            Text = "Редактирование Заказа";
             Load += OrderEditsForm_Load;
             ((System.ComponentModel.ISupportInitialize)clientDataGridView).EndInit();
             buttonsPanel.ResumeLayout(false);
