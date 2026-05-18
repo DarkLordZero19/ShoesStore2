@@ -44,6 +44,7 @@
             label3 = new Label();
             userFullNameLabel = new Label();
             companyLogoPictureBox = new PictureBox();
+            nameLabel = new Label();
             clientPanel.SuspendLayout();
             managerPanel.SuspendLayout();
             adminPanel.SuspendLayout();
@@ -195,7 +196,7 @@
             // 
             userFullNameLabel.AutoSize = true;
             userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            userFullNameLabel.Location = new Point(437, 9);
+            userFullNameLabel.Location = new Point(825, 9);
             userFullNameLabel.Name = "userFullNameLabel";
             userFullNameLabel.Size = new Size(112, 15);
             userFullNameLabel.TabIndex = 4;
@@ -212,11 +213,22 @@
             companyLogoPictureBox.TabIndex = 5;
             companyLogoPictureBox.TabStop = false;
             // 
+            // nameLabel
+            // 
+            nameLabel.AutoSize = true;
+            nameLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            nameLabel.Location = new Point(407, 9);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new Size(185, 21);
+            nameLabel.TabIndex = 9;
+            nameLabel.Text = "Панель Пользователя";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1007, 489);
+            Controls.Add(nameLabel);
             Controls.Add(companyLogoPictureBox);
             Controls.Add(userFullNameLabel);
             Controls.Add(adminPanel);
@@ -254,5 +266,6 @@
         private Label label3;
         private Label userFullNameLabel;
         private PictureBox companyLogoPictureBox;
+        private Label nameLabel;
     }
 }

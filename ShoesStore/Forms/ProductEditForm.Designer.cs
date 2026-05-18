@@ -64,6 +64,7 @@
             pictureBoxPreview = new PictureBox();
             pictureLabel = new Label();
             userFullNameLabel = new Label();
+            label1 = new Label();
             descriptionPanel.SuspendLayout();
             basicInfoPanel.SuspendLayout();
             buttonsPanel.SuspendLayout();
@@ -76,7 +77,7 @@
             // 
             descriptionPanel.Controls.Add(descriptionTextBox);
             descriptionPanel.Controls.Add(descriptionLabel);
-            descriptionPanel.Location = new Point(496, 166);
+            descriptionPanel.Location = new Point(497, 197);
             descriptionPanel.Name = "descriptionPanel";
             descriptionPanel.Size = new Size(294, 71);
             descriptionPanel.TabIndex = 33;
@@ -108,7 +109,7 @@
             basicInfoPanel.Controls.Add(nameTextBox);
             basicInfoPanel.Controls.Add(priceTextBox);
             basicInfoPanel.Controls.Add(stockTextBox);
-            basicInfoPanel.Location = new Point(12, 37);
+            basicInfoPanel.Location = new Point(13, 68);
             basicInfoPanel.Name = "basicInfoPanel";
             basicInfoPanel.Size = new Size(200, 200);
             basicInfoPanel.TabIndex = 31;
@@ -192,7 +193,7 @@
             buttonsPanel.Controls.Add(generateIdButton);
             buttonsPanel.Controls.Add(ClearButton);
             buttonsPanel.Controls.Add(previewButton);
-            buttonsPanel.Location = new Point(50, 305);
+            buttonsPanel.Location = new Point(51, 336);
             buttonsPanel.Name = "buttonsPanel";
             buttonsPanel.Size = new Size(898, 91);
             buttonsPanel.TabIndex = 30;
@@ -286,7 +287,7 @@
             // 
             imagePanel.Controls.Add(imagePathTextBox);
             imagePanel.Controls.Add(imageLabel);
-            imagePanel.Location = new Point(496, 37);
+            imagePanel.Location = new Point(497, 68);
             imagePanel.Name = "imagePanel";
             imagePanel.Size = new Size(294, 71);
             imagePanel.TabIndex = 34;
@@ -317,7 +318,7 @@
             otherInfoPanel.Controls.Add(discountTextBox);
             otherInfoPanel.Controls.Add(unitTextBox);
             otherInfoPanel.Controls.Add(supplierTextBox);
-            otherInfoPanel.Location = new Point(254, 37);
+            otherInfoPanel.Location = new Point(255, 68);
             otherInfoPanel.Name = "otherInfoPanel";
             otherInfoPanel.Size = new Size(200, 200);
             otherInfoPanel.TabIndex = 35;
@@ -390,7 +391,7 @@
             // 
             // pictureBoxPreview
             // 
-            pictureBoxPreview.Location = new Point(808, 37);
+            pictureBoxPreview.Location = new Point(809, 68);
             pictureBoxPreview.Name = "pictureBoxPreview";
             pictureBoxPreview.Size = new Size(202, 200);
             pictureBoxPreview.TabIndex = 36;
@@ -400,7 +401,7 @@
             // 
             pictureLabel.AutoSize = true;
             pictureLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            pictureLabel.Location = new Point(808, 19);
+            pictureLabel.Location = new Point(809, 50);
             pictureLabel.Name = "pictureLabel";
             pictureLabel.Size = new Size(178, 15);
             pictureLabel.TabIndex = 37;
@@ -410,17 +411,28 @@
             // 
             userFullNameLabel.AutoSize = true;
             userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            userFullNameLabel.Location = new Point(422, 9);
+            userFullNameLabel.Location = new Point(837, 9);
             userFullNameLabel.Name = "userFullNameLabel";
             userFullNameLabel.Size = new Size(112, 15);
             userFullNameLabel.TabIndex = 59;
             userFullNameLabel.Text = "userFullNameLabel";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            label1.Location = new Point(380, 9);
+            label1.Name = "label1";
+            label1.Size = new Size(199, 21);
+            label1.TabIndex = 70;
+            label1.Text = "Редактирование товара";
             // 
             // ProductEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1022, 450);
+            Controls.Add(label1);
             Controls.Add(userFullNameLabel);
             Controls.Add(pictureLabel);
             Controls.Add(pictureBoxPreview);
@@ -482,5 +494,6 @@
         private ComboBox categoryComboBox;
         private ComboBox manufacturerComboBox;
         private Label userFullNameLabel;
+        private Label label1;
     }
 }

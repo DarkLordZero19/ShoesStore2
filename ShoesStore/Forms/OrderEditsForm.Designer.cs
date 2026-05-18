@@ -44,6 +44,7 @@
             orderDatePicker = new DateTimePicker();
             basicInfoPanel = new Panel();
             clientLabel = new Label();
+            nameLabel = new Label();
             ((System.ComponentModel.ISupportInitialize)clientDataGridView).BeginInit();
             buttonsPanel.SuspendLayout();
             basicInfoPanel.SuspendLayout();
@@ -53,7 +54,7 @@
             // 
             clientDataGridView.AllowUserToAddRows = false;
             clientDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            clientDataGridView.Location = new Point(358, 30);
+            clientDataGridView.Location = new Point(358, 77);
             clientDataGridView.MultiSelect = false;
             clientDataGridView.Name = "clientDataGridView";
             clientDataGridView.ReadOnly = true;
@@ -67,7 +68,7 @@
             buttonsPanel.Controls.Add(ClearButton);
             buttonsPanel.Controls.Add(cancelButton);
             buttonsPanel.Controls.Add(saveButton);
-            buttonsPanel.Location = new Point(154, 367);
+            buttonsPanel.Location = new Point(154, 414);
             buttonsPanel.Name = "buttonsPanel";
             buttonsPanel.Size = new Size(516, 71);
             buttonsPanel.TabIndex = 57;
@@ -113,7 +114,7 @@
             // 
             userFullNameLabel.AutoSize = true;
             userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            userFullNameLabel.Location = new Point(98, 13);
+            userFullNameLabel.Location = new Point(638, 22);
             userFullNameLabel.Name = "userFullNameLabel";
             userFullNameLabel.Size = new Size(112, 15);
             userFullNameLabel.TabIndex = 58;
@@ -195,7 +196,7 @@
             basicInfoPanel.Controls.Add(label4);
             basicInfoPanel.Controls.Add(deliveryAddressLabel);
             basicInfoPanel.Controls.Add(orderDatePicker);
-            basicInfoPanel.Location = new Point(33, 67);
+            basicInfoPanel.Location = new Point(33, 114);
             basicInfoPanel.Name = "basicInfoPanel";
             basicInfoPanel.Size = new Size(246, 218);
             basicInfoPanel.TabIndex = 67;
@@ -204,17 +205,28 @@
             // 
             clientLabel.AutoSize = true;
             clientLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            clientLabel.Location = new Point(358, 9);
+            clientLabel.Location = new Point(358, 56);
             clientLabel.Name = "clientLabel";
             clientLabel.Size = new Size(99, 15);
             clientLabel.TabIndex = 68;
             clientLabel.Text = "Выбор клиента:";
             // 
+            // nameLabel
+            // 
+            nameLabel.AutoSize = true;
+            nameLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            nameLabel.Location = new Point(280, 16);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new Size(197, 21);
+            nameLabel.TabIndex = 69;
+            nameLabel.Text = "Редактирование заказа";
+            // 
             // OrderEditsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 490);
+            Controls.Add(nameLabel);
             Controls.Add(clientLabel);
             Controls.Add(basicInfoPanel);
             Controls.Add(userFullNameLabel);
@@ -249,5 +261,6 @@
         private DateTimePicker orderDatePicker;
         private Panel basicInfoPanel;
         private Label clientLabel;
+        private Label nameLabel;
     }
 }

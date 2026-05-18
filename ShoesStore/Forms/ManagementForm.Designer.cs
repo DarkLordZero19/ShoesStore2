@@ -122,6 +122,7 @@
             refreshAllButton = new Button();
             statusLabel = new Label();
             userFullNameLabel = new Label();
+            nameLabel = new Label();
             tabControl1.SuspendLayout();
             productsTab.SuspendLayout();
             TableInfoPanel.SuspendLayout();
@@ -1169,17 +1170,28 @@
             // 
             userFullNameLabel.AutoSize = true;
             userFullNameLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            userFullNameLabel.Location = new Point(596, 9);
+            userFullNameLabel.Location = new Point(1126, 19);
             userFullNameLabel.Name = "userFullNameLabel";
             userFullNameLabel.Size = new Size(112, 15);
             userFullNameLabel.TabIndex = 5;
             userFullNameLabel.Text = "userFullNameLabel";
+            // 
+            // nameLabel
+            // 
+            nameLabel.AutoSize = true;
+            nameLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            nameLabel.Location = new Point(555, 14);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new Size(132, 21);
+            nameLabel.TabIndex = 10;
+            nameLabel.Text = "Магазин Обуви";
             // 
             // ManagementForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1325, 687);
+            Controls.Add(nameLabel);
             Controls.Add(userFullNameLabel);
             Controls.Add(statusLabel);
             Controls.Add(refreshAllButton);
@@ -1300,5 +1312,6 @@
         private Label label31;
         private TextBox deliveryAddressTextBox;
         private Label label32;
+        private Label nameLabel;
     }
 }
